@@ -1,0 +1,17 @@
+{
+  "name": "markusos/simple-search-php",
+  "description": "Simple Search Engine in PHP",
+  "version": "0.1",
+  "license": "MIT",
+  "require": {
+
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.4.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Search\\": "src/"
+    }
+  }
+}
