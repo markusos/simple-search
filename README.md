@@ -1,7 +1,9 @@
 # Simple Search PHP
-A Simple Search Engine in PHP
 
 [![Code Climate](https://codeclimate.com/github/markusos/simple-search-php/badges/gpa.svg)](https://codeclimate.com/github/markusos/simple-search-php)
+[![Test Coverage](https://codeclimate.com/github/markusos/simple-search-php/badges/coverage.svg)](https://codeclimate.com/github/markusos/simple-search-php)
+
+A Simple Search Engine in PHP
 
 - Query document index for documents containing tokens in query.
 - Result documents are ranked with TF-IDF.
