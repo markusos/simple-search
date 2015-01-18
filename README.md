@@ -6,7 +6,7 @@
 A Simple Search Engine in PHP
 
 - Query document index for documents containing tokens in query.
-- Result documents are ranked with TF-IDF.
+- Result documents are ranked with TF-IDF term weighting and cosine similarity.
 
 ### License
 
