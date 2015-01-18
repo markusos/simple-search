@@ -14,6 +14,7 @@ class MemoryDocumentIndex implements DocumentIndex {
     }
 
     public function addDocument(Document $document) {
+        $document->setId($this->size);
         $content = $document->getContent();
         $tokens = array_unique($this->tokenizer->tokenize($content));
         foreach($tokens as $token) {
@@ -24,10 +25,10 @@ class MemoryDocumentIndex implements DocumentIndex {
 
     public function addDocumentForToken($token, Document $document) {
         if (!isset($this->index[$token])) {
-            $this->index[$token] = [$document];
+            $this->index[$token] = [$document->getId() => $document];
         }
         else {
-            $this->index[$token][] = $document;
+            $this->index[$token][$document->getId()] = $document;
         }
     }
 

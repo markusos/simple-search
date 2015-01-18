@@ -22,31 +22,62 @@ class Engine {
     }
 
     public function search($query) {
-        $documents = $this->index->search($query);
+        $queryTokens = $this->tokenizer->tokenize($query);
 
-        foreach ($documents as $document) {
-            $document->score = $this->termFrequency($query, $document) * $this->inverseDocumentFrequency($query);
+        $documents = [];
+        foreach ($queryTokens as $token) {
+            $documents += $this->index->search($token);
         }
 
-        usort( $documents, function($a, $b) {
+        foreach ($documents as $document) {
+            $document->score = $this->rankDocument($query, $document);
+        }
+
+        usort($documents, function($a, $b) {
             return $a->score == $b->score ? 0 : ( $a->score > $b->score ) ? -1 : 1;
         } );
 
         return $documents;
     }
 
-    public function termFrequency($term, Document $document) {
-        $tokens = $this->tokenizer->tokenize($document->getContent());
-        $counts = array_count_values($tokens);
-        if (isset($counts[$term])) {
-            return $counts[$term];
+    private function rankDocument($query, Document $document) {
+
+        $documentTfIdf = [];
+        $queryTfIdf = [];
+        $queryTokens = $this->tokenizer->tokenize($query);
+
+        // Calculate TF-IDF score for each token
+        foreach ($queryTokens as $token) {
+            $documentTf = $this->termFrequency($token, $document->getContent());
+            $queryTf = $this->termFrequency($token, $query);
+            $tokenIdf = $this->inverseDocumentFrequency($token);
+
+            $documentTfIdf[$token] = $documentTf * $tokenIdf;
+            $queryTfIdf[$token] = $queryTf * $tokenIdf;
+        }
+
+        // Calculate Cosine Similarity
+        $dot = array_sum(array_map(function($a,$b) { return $a*$b; }, $documentTfIdf, $queryTfIdf));
+        $absQuery = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $queryTfIdf)));
+        $absDocument = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $documentTfIdf)));
+        $score = $dot / ($absQuery * $absDocument);
+
+        return $score;
+    }
+
+    private function termFrequency($term, $content) {
+        $tokens = $this->tokenizer->tokenize($content);
+        $termCounts = array_count_values($tokens);
+        $documentTerms = count($tokens);
+        if (isset($termCounts[$term])) {
+            return $termCounts[$term] / $documentTerms;
         }
         else {
             return 0;
         }
     }
 
-    public function inverseDocumentFrequency($term) {
+    private function inverseDocumentFrequency($term) {
         $termDocumentCount = count($this->index->search($term));
         $documentCount = $this->index->size();
 

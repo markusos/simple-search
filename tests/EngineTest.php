@@ -29,9 +29,18 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotContains($docs[2], $results);
         $this->assertContains($docs[3], $results);
 
+        $results = $engine->search('d a');
+
+        // Validate the result content
+        $this->assertEquals(4, count($results));
+        $this->assertContains($docs[0], $results);
+        $this->assertContains($docs[1], $results);
+        $this->assertNotContains($docs[2], $results);
+        $this->assertContains($docs[3], $results);
+        $this->assertContains($docs[5], $results);
+
         // Validate the result order
-        $this->assertEquals($docs[3], $results[0]);
-        $this->assertEquals($docs[1], $results[1]);
-        $this->assertEquals($docs[0], $results[2]);
+        $this->assertEquals($docs[0], $results[0]);
+        $this->assertEquals($docs[5], $results[1]);
     }
 }
