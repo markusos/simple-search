@@ -46,7 +46,7 @@ class Engine {
         $queryTfIdf = [];
         $queryTokens = $this->tokenizer->tokenize($query);
 
-        // Calculate TF-IDF score for each token
+        // Calculate TF-IDF score for each search token
         foreach ($queryTokens as $token) {
             $documentTf = $this->termFrequency($token, $document->getContent());
             $queryTf = $this->termFrequency($token, $query);
@@ -65,6 +65,19 @@ class Engine {
         return $score;
     }
 
+    public function findKeywords($content)  {
+        $tokens = array_unique($this->tokenizer->tokenize($content));
+
+        $keywords = [];
+        foreach($tokens as $token) {
+            $documentTf = $this->termFrequency($token, $content);
+            $tokenIdf = $this->inverseDocumentFrequency($token);
+            $keywords[$token] = $documentTf * $tokenIdf;
+        }
+
+        return $keywords;
+    }
+
     private function termFrequency($term, $content) {
         $tokens = $this->tokenizer->tokenize($content);
         $termCounts = array_count_values($tokens);
@@ -78,12 +91,17 @@ class Engine {
     }
 
     private function inverseDocumentFrequency($term) {
+        $defaultIDF = 1.5;
+
         $termDocumentCount = count($this->index->search($term));
         $documentCount = $this->index->size();
 
+        if ($termDocumentCount !== 0) {
             return log($documentCount / ($termDocumentCount));
-
-
+        }
+        else {
+            return $defaultIDF;
+        }
     }
 
 }
