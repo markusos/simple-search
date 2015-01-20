@@ -48,7 +48,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
         $engine = new Engine();
 
-        $file = 'Wikipedia_sample_dataset.json';
+        $file = 'tests/Wikipedia_sample_dataset.json';
         $dataset = json_decode(file_get_contents($file));
 
         foreach ($dataset->data as $article) {
