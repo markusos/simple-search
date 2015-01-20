@@ -43,4 +43,20 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($docs[0], $results[0]);
         $this->assertEquals($docs[5], $results[1]);
     }
+
+    public function testIndexData() {
+
+        $engine = new Engine();
+
+        $file = 'Wikipedia_sample_dataset.json';
+        $dataset = json_decode(file_get_contents($file));
+
+        foreach ($dataset->data as $article) {
+            $engine->addDocument(new Document($article->topic, $article->text, ''));
+        }
+
+        $results = $engine->search('computer architecture');
+
+        $this->assertEquals('Computer architecture', $results[0]->getTitle());
+    }
 }
