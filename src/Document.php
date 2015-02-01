@@ -1,7 +1,5 @@
 <?php namespace Search;
 
-use Guzzle\Common\Exception\RuntimeException;
-
 class Document {
 
     private $id;
@@ -22,7 +20,7 @@ class Document {
             return $this->id;
         }
         else {
-            throw new RuntimeException('trying to access id before indexed');
+            throw new \RuntimeException('Trying to access id before indexed');
         }
     }
 

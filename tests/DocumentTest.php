@@ -10,5 +10,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('test document', $doc->getContent());
         $this->assertEquals('path/to/test/doc', $doc->getPath());
 
+        $this->setExpectedException('\RuntimeException', 'Trying to access id before indexed');
+        $doc->getId();
     }
 }
