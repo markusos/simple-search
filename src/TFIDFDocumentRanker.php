@@ -52,7 +52,13 @@ class TFIDFDocumentRanker implements DocumentRanker {
             $keywords[$token] = $documentTf * $tokenIdf;
         }
 
-        return $keywords;
+        arsort($keywords);
+        $result = [];
+        foreach($keywords as $keyword => $score) {
+            $result[] = ['keyword' => $keyword, 'score' => $score];
+        }
+
+        return $result;
     }
 
     private function termFrequency($term, $content) {

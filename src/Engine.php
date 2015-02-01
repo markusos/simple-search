@@ -45,4 +45,7 @@ class Engine {
         return $documents;
     }
 
+    public function findKeywords($query) {
+        return $this->ranker->findKeywords($query);
+    }
 }

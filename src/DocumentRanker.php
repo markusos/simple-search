@@ -8,4 +8,6 @@ interface DocumentRanker {
 
     public function rank(Document $document, $query);
 
+    public function findKeywords($content);
+
 }
