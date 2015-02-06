@@ -72,5 +72,9 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
         $results = $engine->findKeywords('In computer engineering, computer architecture is the conceptual design and fundamental operational structure of a computer system.');
         $this->assertEquals('computer', $results[0]['keyword']);
+
+        $this->assertEquals(count($dataset->data), $engine->size());
+        $engine->clear();
+        $this->assertEquals(0, $engine->size());
     }
 }

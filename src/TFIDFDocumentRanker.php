@@ -33,7 +33,10 @@ class TFIDFDocumentRanker implements DocumentRanker {
             $queryTfIdf[$token] = $queryTf * $tokenIdf;
         }
 
-        // Calculate Cosine Similarity
+        return $this->cosineSimilarity($documentTfIdf, $queryTfIdf);
+    }
+
+    private function cosineSimilarity($documentTfIdf, $queryTfIdf) {
         $dot = array_sum(array_map(function($a,$b) { return $a*$b; }, $documentTfIdf, $queryTfIdf));
         $absQuery = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $queryTfIdf)));
         $absDocument = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $documentTfIdf)));
