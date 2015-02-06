@@ -6,8 +6,9 @@
 
 A Simple Search Engine in PHP
 
-- Query document index for documents containing tokens in query.
-- Result documents are ranked with TF-IDF term weighting and cosine similarity.
+- Query the document index using multi word queries.
+- Search result is ranked with TF-IDF term weighting and cosine similarity.
+- Uses MongoDB to persist the search index and all indexed documents.
 
 ### License
 
