@@ -25,7 +25,7 @@ class TFIDFDocumentRanker implements DocumentRanker {
 
         // Calculate TF-IDF score for each search token
         foreach ($queryTokens as $token) {
-            $documentTf = $this->termFrequency($token, $document->getContent());
+            $documentTf = $this->termFrequency($token, $document->content);
             $queryTf = $this->termFrequency($token, $query);
             $tokenIdf = $this->inverseDocumentFrequency($token);
 

@@ -15,15 +15,28 @@ class Engine {
      */
     private $ranker;
 
-    public function __construct()
+    public function __construct($persistent = true)
     {
         $this->tokenizer = new SimpleTokenizer();
-        $this->index = new MemoryDocumentIndex($this->tokenizer);
+        if($persistent) {
+            $this->index = new MongoDBDocumentIndex($this->tokenizer);
+        }
+        else {
+            $this->index = new MemoryDocumentIndex($this->tokenizer);
+        }
         $this->ranker = new TFIDFDocumentRanker($this->index, $this->tokenizer);
     }
 
     public function addDocument(Document $document) {
         $this->index->addDocument($document);
+    }
+
+    public function size() {
+        return $this->index->size();
+    }
+
+    public function clear() {
+        $this->index->clear();
     }
 
     public function search($query) {

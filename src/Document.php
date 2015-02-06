@@ -2,45 +2,15 @@
 
 class Document {
 
-    private $id;
-    private $title;
-    private $content;
-    private $path;
+    public $id;
+    public $title;
+    public $content;
+    public $location;
 
-    function __construct($title, $content, $path)
+    function __construct($title, $content, $location)
     {
         $this->title = $title;
         $this->content = $content;
-        $this->path = $path;
-    }
-
-    public function getId()
-    {
-        if (isset($this->id)) {
-            return $this->id;
-        }
-        else {
-            throw new \RuntimeException('Trying to access id before indexed');
-        }
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    public function getPath()
-    {
-        return $this->path;
+        $this->location = $location;
     }
 }

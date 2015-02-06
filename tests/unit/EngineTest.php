@@ -5,7 +5,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
     public function testEngine() {
 
-        $engine = new Engine();
+        $engine = new Engine(false);
 
         $docs = [
             new Document('A', 'a d f', '/a/a'),
@@ -46,7 +46,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
     public function testIndexData() {
 
-        $engine = new Engine();
+        $engine = new Engine(false);
 
         $file = 'tests/Wikipedia_sample_dataset.json';
         $dataset = json_decode(file_get_contents($file));
@@ -57,11 +57,11 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
         $results = $engine->search('computer architecture');
 
-        $this->assertEquals('Computer architecture', $results[0]->getTitle());
+        $this->assertEquals('Computer architecture', $results[0]->title);
     }
 
     public function testFindKeywords() {
-        $engine = new Engine();
+        $engine = new Engine(false);
 
         $file = 'tests/Wikipedia_sample_dataset.json';
         $dataset = json_decode(file_get_contents($file));
@@ -72,6 +72,5 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
         $results = $engine->findKeywords('In computer engineering, computer architecture is the conceptual design and fundamental operational structure of a computer system.');
         $this->assertEquals('computer', $results[0]['keyword']);
-
     }
 }
