@@ -20,6 +20,8 @@ class Engine {
      */
     private $ranker;
 
+    private $stopWords;
+
     /**
      * Construct a new Search Engine instance
      * @param bool $persistent
@@ -27,6 +29,9 @@ class Engine {
     public function __construct($persistent = true)
     {
         $this->tokenizer = new SimpleTokenizer();
+
+        $this->stopWords = array_map(function($word) {return $this->tokenizer->tokenize($word)[0];}, Config::getStopWords());
+
         if($persistent) {
             $this->index = new MongoDBDocumentIndex($this->tokenizer);
         }
@@ -70,7 +75,9 @@ class Engine {
 
         $documents = [];
         foreach ($queryTokens as $token) {
-            $documents += $this->index->search($token);
+            if (!in_array($token, $this->stopWords)) {
+                $documents += $this->index->search($token);
+            }
         }
 
         foreach ($documents as $document) {

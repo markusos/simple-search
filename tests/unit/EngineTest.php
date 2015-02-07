@@ -8,19 +8,19 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $engine = new Engine(false);
 
         $docs = [
-            new Document('A', 'a d f', '/a/a'),
-            new Document('B', 'b d d', '/b/b'),
-            new Document('C', 'c e f', '/c/c'),
-            new Document('D', 'd d d', '/c/c'),
-            new Document('E', 'e e f', '/c/c'),
-            new Document('F', 'f a b', '/c/c'),
+            new Document('A', 'aa dd ff', ''),
+            new Document('B', 'bb dd dd', ''),
+            new Document('C', 'cc ee ff', ''),
+            new Document('D', 'dd dd dd', ''),
+            new Document('E', 'ee ee ff', ''),
+            new Document('F', 'ff aa bb', ''),
         ];
 
         foreach ($docs as $doc) {
             $engine->addDocument($doc);
         }
 
-        $results = $engine->search('d');
+        $results = $engine->search('dd');
 
         // Validate the result content
         $this->assertEquals(3, count($results));
@@ -29,7 +29,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotContains($docs[2], $results);
         $this->assertContains($docs[3], $results);
 
-        $results = $engine->search('d a');
+        $results = $engine->search('dd aa');
 
         // Validate the result content
         $this->assertEquals(4, count($results));
@@ -52,7 +52,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $dataset = json_decode(file_get_contents($file));
 
         foreach ($dataset->data as $article) {
-            $engine->addDocument(new Document($article->topic, $article->text, ''));
+            $engine->addDocument(new Document($article->title, $article->content, ''));
         }
 
         $results = $engine->search('computer architecture');
@@ -67,7 +67,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $dataset = json_decode(file_get_contents($file));
 
         foreach ($dataset->data as $article) {
-            $engine->addDocument(new Document($article->topic, $article->text, ''));
+            $engine->addDocument(new Document($article->title, $article->content, ''));
         }
 
         $results = $engine->findKeywords('In computer engineering, computer architecture is the conceptual design and fundamental operational structure of a computer system.');
