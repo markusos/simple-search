@@ -25,6 +25,8 @@ class MongoDocumentIndexTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotContains($docA, $index->search('b'), '', false, false);
         $this->assertNotContains($docA, $index->search('c'), '', false, false);
 
+        $this->assertEquals([], $index->search('q'));
+
         $index->clear();
         $this->assertEquals(0, $index->size());
     }
