@@ -6,6 +6,7 @@ class MongoDBDocumentIndex implements DocumentIndex {
     private $connection;
     private $index;
     private $documents;
+    private $size;
 
     function __construct(Tokenizer $tokenizer)
     {
@@ -15,13 +16,14 @@ class MongoDBDocumentIndex implements DocumentIndex {
         $this->index->createIndex(array('token' => 1));
 
         $this->documents = $this->connection->search->documents;
+        $this->size = $this->documents->count();
     }
 
     public function addDocument(Document $document)
     {
         $id = new \MongoId();
         $document->_id = $id;
-        $document->id = $id;
+        $document->id = $this->size;
 
         $this->documents->insert($document);
 
@@ -32,19 +34,25 @@ class MongoDBDocumentIndex implements DocumentIndex {
                                  ['$push' => ["documents" => $id]],
                                  ["upsert" => true]);
         }
+        $this->size += 1;
     }
 
     public function search($query)
     {
         $results = [];
         $data = $this->index->findOne(array('token' => utf8_encode($query)));
+
+        if(!isset($data)) {
+            return $results;
+        }
+
         foreach($data['documents'] as $documentID) {
             $result = $this->documents->findOne(array('_id' => $documentID));
             $document = new Document($result['title'], $result['content'], $result['location']);
             $document->id = $result['id'];
             $document->_id = $result['_id'];
 
-            $results[] = $document;
+            $results[$document->id] = $document;
         }
 
         return $results;
@@ -52,10 +60,11 @@ class MongoDBDocumentIndex implements DocumentIndex {
 
     public function size()
     {
-        return $this->documents->count();
+        return $this->size;
     }
 
     public function clear() {
+        $this->size = 0;
         $this->documents->drop();
         $this->index->drop();
     }

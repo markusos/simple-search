@@ -30,7 +30,7 @@ class Engine {
     {
         $this->tokenizer = new SimpleTokenizer();
 
-        $this->stopWords = array_map(function($word) {return $this->tokenizer->tokenize($word)[0];}, Config::getStopWords());
+        $this->stopWords = Config::getStopWords();
 
         if($persistent) {
             $this->index = new MongoDBDocumentIndex($this->tokenizer);
@@ -73,17 +73,23 @@ class Engine {
     public function search($query) {
         $queryTokens = $this->tokenizer->tokenize($query);
 
+        // Filter stop words
+        $queryTokens = array_filter($queryTokens, function($token) {
+            return !in_array($token, $this->stopWords);
+        });
+
+        // Find matching documents
         $documents = [];
         foreach ($queryTokens as $token) {
-            if (!in_array($token, $this->stopWords)) {
-                $documents += $this->index->search($token);
-            }
+            $documents += $this->index->search($token);
         }
 
+        // Rank found documents
         foreach ($documents as $document) {
-            $document->score = $this->ranker->rank($document, $query);
+            $document->score = $this->ranker->rank($document, $queryTokens);
         }
 
+        // Sort the result according to document rank
         usort($documents, function($a, $b) {
             return $a->score == $b->score ? 0 : ( $a->score > $b->score ) ? -1 : 1;
         } );

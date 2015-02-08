@@ -27,18 +27,18 @@ class TFIDFDocumentRanker implements DocumentRanker {
     /**
      * Rank the Document based on TF-IDF scoring and Cosine Similarity
      * @param Document $document Document to rank
-     * @param string $query Query string
+     * @param array $queryTokens Query tokens
      * @return float Document rank
      */
-    public function rank(Document $document, $query) {
+    public function rank(Document $document, $queryTokens) {
         $documentTfIdf = [];
         $queryTfIdf = [];
-        $queryTokens = $this->tokenizer->tokenize($query);
+        $documentTokens = $this->tokenizer->tokenize($document->content);
 
         // Calculate TF-IDF score for each search token
         foreach ($queryTokens as $token) {
-            $documentTf = $this->termFrequency($token, $document->content);
-            $queryTf = $this->termFrequency($token, $query);
+            $documentTf = $this->termFrequency($token, $documentTokens);
+            $queryTf = $this->termFrequency($token, $queryTokens);
             $tokenIdf = $this->inverseDocumentFrequency($token);
 
             $documentTfIdf[$token] = $documentTf * $tokenIdf;
@@ -64,11 +64,12 @@ class TFIDFDocumentRanker implements DocumentRanker {
     }
 
     public function findKeywords($content)  {
-        $tokens = array_unique($this->tokenizer->tokenize($content));
+        $tokens = $this->tokenizer->tokenize($content);
+        $uniqueTokens = array_unique($tokens);
 
         $keywords = [];
-        foreach($tokens as $token) {
-            $documentTf = $this->termFrequency($token, $content);
+        foreach($uniqueTokens as $token) {
+            $documentTf = $this->termFrequency($token, $tokens);
             $tokenIdf = $this->inverseDocumentFrequency($token);
             $keywords[$token] = $documentTf * $tokenIdf;
         }
@@ -85,11 +86,10 @@ class TFIDFDocumentRanker implements DocumentRanker {
     /**
      * Calculate the normalized Term Frequency of a Term token in a Content string
      * @param string $term Term to calculate the Term Frequency for
-     * @param string $content Content string
+     * @param string $tokens Content tokens
      * @return float The TF score
      */
-    private function termFrequency($term, $content) {
-        $tokens = $this->tokenizer->tokenize($content);
+    private function termFrequency($term, $tokens) {
         $termCounts = array_count_values($tokens);
         $documentTerms = count($tokens);
         if (isset($termCounts[$term])) {

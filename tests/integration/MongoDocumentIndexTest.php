@@ -7,6 +7,9 @@ class MongoDocumentIndexTest extends \PHPUnit_Framework_TestCase {
         $tokenizer = new SimpleTokenizer();
         $index = new MongoDBDocumentIndex($tokenizer);
 
+        $index->clear();
+        $this->assertEquals(0, $index->size());
+
         $docA = new Document('A', 'a s d', '/a/a');
         $docB = new Document('B', 'b n m', '/b/b');
         $docC = new Document('C', 'c v f', '/c/c');
