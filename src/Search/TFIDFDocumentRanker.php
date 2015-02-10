@@ -14,10 +14,41 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @var DocumentIndex
      */
     private $index;
+
     /**
      * @var Tokenizer
      */
     private $tokenizer;
+
+    /**
+     * Query after Tokenization
+     * @var array
+     */
+    private $queryTokens;
+
+    /**
+     * Query IDF scores
+     * @var array
+     */
+    private $queryTfIdf;
+
+    /**
+     * Document after Tokenization
+     * @var array
+     */
+    private $documentTokens;
+
+    /**
+     * Frequency of each unique Token in Document
+     * @var array
+     */
+    private $documentTokenFrequency;
+
+    /**
+     *  Number of tokens in document
+     * @var integer
+     */
+    private $documentTokenCount;
 
     function __construct(DocumentIndex $index, Tokenizer $tokenizer) {
         $this->tokenizer = $tokenizer;
@@ -25,27 +56,67 @@ class TFIDFDocumentRanker implements DocumentRanker {
     }
 
     /**
+     * Init the ranker with the search query
+     * @param array $queryTokens Query tokens
+     */
+    public function init($queryTokens) {
+        $this->queryTokens = $queryTokens;
+        $this->queryTfIdf = [];
+
+        foreach ($this->queryTokens as $token) {
+            $this->queryTfIdf[$token] = $this->inverseDocumentFrequency($token);
+        }
+    }
+
+    /**
      * Rank the Document based on TF-IDF scoring and Cosine Similarity
      * @param Document $document Document to rank
-     * @param array $queryTokens Query tokens
      * @return float Document rank
      */
-    public function rank(Document $document, $queryTokens) {
+    public function rank(Document $document) {
+        $this->initDocument($document->content);
+
         $documentTfIdf = [];
-        $queryTfIdf = [];
-        $documentTokens = $this->tokenizer->tokenize($document->content);
 
         // Calculate TF-IDF score for each search token
-        foreach ($queryTokens as $token) {
-            $documentTf = $this->termFrequency($token, $documentTokens);
-            $queryTf = $this->termFrequency($token, $queryTokens);
-            $tokenIdf = $this->inverseDocumentFrequency($token);
-
-            $documentTfIdf[$token] = $documentTf * $tokenIdf;
-            $queryTfIdf[$token] = $queryTf * $tokenIdf;
+        foreach ($this->queryTokens as $token) {
+            $documentTf = $this->termFrequency($token);
+            $documentTfIdf[$token] = $documentTf * $this->queryTfIdf[$token];
         }
 
-        return $this->cosineSimilarity($documentTfIdf, $queryTfIdf);
+        return $this->cosineSimilarity($documentTfIdf, $this->queryTfIdf);
+    }
+
+    /**
+     * Find most important words in given text.
+     * @param string $content Text to find keywords in.
+     * @return array Result list of keywords ordered by importance.
+     */
+    public function findKeywords($content)  {
+        $this->initDocument($content);
+        $uniqueTokens = array_unique($this->documentTokens);
+
+        $keywords = [];
+        foreach($uniqueTokens as $token) {
+            $documentTf = $this->termFrequency($token);
+            $tokenIdf = $this->inverseDocumentFrequency($token);
+            $keywords[$token] = $documentTf * $tokenIdf;
+        }
+
+        arsort($keywords);
+
+        $result = [];
+        foreach($keywords as $keyword => $score) {
+            $result[] = ['keyword' => $keyword, 'score' => $score];
+        }
+
+        return $result;
+    }
+
+    private function initDocument($content) {
+        $this->documentTokens = $this->tokenizer->tokenize($content);
+        $this->documentTokenFrequency = array_count_values($this->documentTokens);
+        $this->documentTokenCount = count($this->documentTokens);
     }
 
     /**
@@ -57,43 +128,19 @@ class TFIDFDocumentRanker implements DocumentRanker {
     private function cosineSimilarity($documentTfIdf, $queryTfIdf) {
         $dot = array_sum(array_map(function($a,$b) { return $a*$b; }, $documentTfIdf, $queryTfIdf));
         $absQuery = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $queryTfIdf)));
-        $absDocument = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $documentTfIdf)));
-        $score = $dot / ($absQuery * $absDocument);
+        $score = $dot / $absQuery;
 
         return $score;
-    }
-
-    public function findKeywords($content)  {
-        $tokens = $this->tokenizer->tokenize($content);
-        $uniqueTokens = array_unique($tokens);
-
-        $keywords = [];
-        foreach($uniqueTokens as $token) {
-            $documentTf = $this->termFrequency($token, $tokens);
-            $tokenIdf = $this->inverseDocumentFrequency($token);
-            $keywords[$token] = $documentTf * $tokenIdf;
-        }
-
-        arsort($keywords);
-        $result = [];
-        foreach($keywords as $keyword => $score) {
-            $result[] = ['keyword' => $keyword, 'score' => $score];
-        }
-
-        return $result;
     }
 
     /**
      * Calculate the normalized Term Frequency of a Term token in a Content string
      * @param string $term Term to calculate the Term Frequency for
-     * @param string $tokens Content tokens
      * @return float The TF score
      */
-    private function termFrequency($term, $tokens) {
-        $termCounts = array_count_values($tokens);
-        $documentTerms = count($tokens);
-        if (isset($termCounts[$term])) {
-            return $termCounts[$term] / $documentTerms;
+    private function termFrequency($term) {
+        if (isset($this->documentTokenFrequency[$term])) {
+            return $this->documentTokenFrequency[$term] / $this->documentTokenCount;
         }
         else {
             return 0.0;
@@ -106,17 +153,10 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @return float The IDF score
      */
     private function inverseDocumentFrequency($term) {
-        $defaultIDF = 1.5;
-
         $termDocumentCount = count($this->index->search($term));
         $documentCount = $this->index->size();
-
-        if ($termDocumentCount !== 0) {
-            return log($documentCount / ($termDocumentCount));
-        }
-        else {
-            return $defaultIDF;
-        }
+        $idf = 1 + log($documentCount / ($termDocumentCount + 1));
+        return $idf*$idf;
     }
 
 }

@@ -51,9 +51,10 @@
 
             if (data.length > 0) {
                 $.each( data, function( i, result ) {
-                    $( "<tr><td><b>" + result.title + "</b></td></tr>>" ).appendTo( "#results" );
-                    $( "<tr><td>" + result.content + "</td></tr>>" ).appendTo( "#results" );
-                    $( "<tr><td>&nbsp</td></tr>>" ).appendTo( "#results" );
+                    $( "<tr><td><b>" + result.title + "</b></td></tr>" ).appendTo( "#results" );
+                    $( "<tr><td>" + result.content + "</td></tr>" ).appendTo( "#results" );
+                    $( "<tr><td>" + result.score + "</td></tr>" ).appendTo( "#results" );
+                    $( "<tr><td>&nbsp</td></tr>" ).appendTo( "#results" );
                 });
             }
             else {

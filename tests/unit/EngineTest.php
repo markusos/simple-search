@@ -41,7 +41,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
         // Validate the result order
         $this->assertEquals($docs[0], $results[0]);
-        $this->assertEquals($docs[5], $results[1]);
+        $this->assertEquals($docs[3], $results[1]);
     }
 
     public function testIndexData() {

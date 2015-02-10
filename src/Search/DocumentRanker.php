@@ -15,12 +15,17 @@ interface DocumentRanker {
     function __construct(DocumentIndex $index, Tokenizer $tokenizer);
 
     /**
-     * Rank a document based on a query
+     * Init the document ranker with the search query
+     * @param array $queryTokens Array of query tokens
+     */
+    public function init($queryTokens);
+
+    /**
+     * Rank a document based on the query
      * @param Document $document Document to rank
-     * @param $query string Query to rank the document against
      * @return float Rank for the document
      */
-    public function rank(Document $document, $query);
+    public function rank(Document $document);
 
     /**
      * Find keywords using the DocumentIndex data

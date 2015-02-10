@@ -12,6 +12,6 @@ class SimpleTokenizer implements Tokenizer {
      * @return array string tokens
      */
     public function tokenize($string) {
-        return array_filter(preg_split("/[\\s\\.,?!;:]+/", strtolower($string)));
+        return array_filter(preg_split("/[\\s\\.,?!;:()\\]\\[\\{\\}\\-\\_]+/", strtolower($string)));
     }
 }

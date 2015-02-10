@@ -78,6 +78,9 @@ class Engine {
             return !in_array($token, $this->stopWords);
         });
 
+        // Init the ranker with the query
+        $this->ranker->init($queryTokens);
+
         // Find matching documents
         $documents = [];
         foreach ($queryTokens as $token) {
@@ -86,7 +89,7 @@ class Engine {
 
         // Rank found documents
         foreach ($documents as $document) {
-            $document->score = $this->ranker->rank($document, $queryTokens);
+            $document->score = $this->ranker->rank($document);
         }
 
         // Sort the result according to document rank
