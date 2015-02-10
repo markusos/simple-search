@@ -38,7 +38,8 @@ class Engine {
         else {
             $this->index = new MemoryDocumentIndex($this->tokenizer);
         }
-        $this->ranker = new TFIDFDocumentRanker($this->index, $this->tokenizer);
+
+        $this->ranker = new TFIDFDocumentRanker();
     }
 
     /**
@@ -79,12 +80,14 @@ class Engine {
         });
 
         // Init the ranker with the query
-        $this->ranker->init($queryTokens);
+        $this->ranker->init($queryTokens, $this->size());
 
         // Find matching documents
         $documents = [];
         foreach ($queryTokens as $token) {
-            $documents += $this->index->search($token);
+            $result = $this->index->search($token);
+            $this->ranker->cacheTokenFrequency($token, count($result));
+            $documents += $result;
         }
 
         // Rank found documents
@@ -106,6 +109,14 @@ class Engine {
      * @return array of keywords, ordered by the ranker class
      */
     public function findKeywords($query) {
-        return $this->ranker->findKeywords($query);
+        $tokens = $this->tokenizer->tokenize($query);
+        $this->ranker->init($tokens, $this->size());
+
+        foreach ($tokens as $token) {
+            $result = $this->index->search($token);
+            $this->ranker->cacheTokenFrequency($token, count($result));
+        }
+
+        return $this->ranker->findKeywords($tokens);
     }
 }

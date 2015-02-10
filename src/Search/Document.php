@@ -5,6 +5,7 @@ class Document {
     public $id;
     public $title;
     public $content;
+    public $tokens;
     public $location;
 
     function __construct($title, $content, $location)

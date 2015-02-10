@@ -24,12 +24,14 @@ class MongoDBDocumentIndex implements DocumentIndex {
         $id = new \MongoId();
         $document->_id = $id;
         $document->id = $this->size;
+        $document->tokens = array_map(function($a) {
+            return utf8_encode($a);
+        }, $this->tokenizer->tokenize($document->content));
 
         $this->documents->insert($document);
 
-        $content = $document->content;
-        $tokens = array_unique($this->tokenizer->tokenize($content));
-        foreach($tokens as $token) {
+        $uniqueTokens = array_unique($document->tokens);
+        foreach($uniqueTokens as $token) {
             $this->index->update(["token" => utf8_encode($token)],
                                  ['$push' => ["documents" => $id]],
                                  ["upsert" => true]);
@@ -50,6 +52,7 @@ class MongoDBDocumentIndex implements DocumentIndex {
             $result = $this->documents->findOne(array('_id' => $documentID));
             $document = new Document($result['title'], $result['content'], $result['location']);
             $document->id = $result['id'];
+            $document->tokens = $result['tokens'];
             $document->_id = $result['_id'];
 
             $results[$document->id] = $document;

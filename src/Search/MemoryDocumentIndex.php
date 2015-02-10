@@ -15,9 +15,9 @@ class MemoryDocumentIndex implements DocumentIndex {
 
     public function addDocument(Document $document) {
         $document->id = $this->size;
-        $content = $document->content;
-        $tokens = array_unique($this->tokenizer->tokenize($content));
-        foreach($tokens as $token) {
+        $document->tokens = $this->tokenizer->tokenize($document->content);
+        $uniqueTokens = array_unique($document->tokens);
+        foreach($uniqueTokens as $token) {
             $this->addDocumentForToken($token, $document);
         }
         $this->size += 1;

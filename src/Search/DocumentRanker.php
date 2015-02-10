@@ -8,17 +8,18 @@ namespace Search;
 interface DocumentRanker {
 
     /**
-     * Construct a new DocumentRanker
-     * @param DocumentIndex $index DocumentIndex used to rank documents
-     * @param Tokenizer $tokenizer Tokenizer used to rank documents
+     * Init the document ranker with the search query
+     * @param array $query Array of query tokens
+     * @param integer $indexSize Number of documents in index
      */
-    function __construct(DocumentIndex $index, Tokenizer $tokenizer);
+    public function init($query, $indexSize);
 
     /**
      * Init the document ranker with the search query
-     * @param array $queryTokens Array of query tokens
+     * @param string $token Token to cache frequency for
+     * @param integer $count Number of documents containing $token
      */
-    public function init($queryTokens);
+    public function cacheTokenFrequency($token, $count);
 
     /**
      * Rank a document based on the query

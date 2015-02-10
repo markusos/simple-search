@@ -11,16 +11,6 @@ namespace Search;
 class TFIDFDocumentRanker implements DocumentRanker {
 
     /**
-     * @var DocumentIndex
-     */
-    private $index;
-
-    /**
-     * @var Tokenizer
-     */
-    private $tokenizer;
-
-    /**
      * Query after Tokenization
      * @var array
      */
@@ -42,7 +32,7 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * Frequency of each unique Token in Document
      * @var array
      */
-    private $documentTokenFrequency;
+    private $tokenFrequency;
 
     /**
      *  Number of tokens in document
@@ -50,22 +40,25 @@ class TFIDFDocumentRanker implements DocumentRanker {
      */
     private $documentTokenCount;
 
-    function __construct(DocumentIndex $index, Tokenizer $tokenizer) {
-        $this->tokenizer = $tokenizer;
-        $this->index = $index;
-    }
+    /**
+     * Number of documents in index
+     */
+    private $indexSize;
 
     /**
      * Init the ranker with the search query
      * @param array $queryTokens Query tokens
+     * @param integer $indexSize Number of documents in index
      */
-    public function init($queryTokens) {
+    public function init($queryTokens, $indexSize) {
         $this->queryTokens = $queryTokens;
         $this->queryTfIdf = [];
 
-        foreach ($this->queryTokens as $token) {
-            $this->queryTfIdf[$token] = $this->inverseDocumentFrequency($token);
-        }
+        $this->indexSize = $indexSize;
+    }
+
+    public function cacheTokenFrequency($token, $count) {
+        $this->queryTfIdf[$token] = $this->inverseDocumentFrequency($count);
     }
 
     /**
@@ -74,7 +67,7 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @return float Document rank
      */
     public function rank(Document $document) {
-        $this->initDocument($document->content);
+        $this->initDocument($document->tokens);
 
         $documentTfIdf = [];
 
@@ -89,11 +82,11 @@ class TFIDFDocumentRanker implements DocumentRanker {
 
     /**
      * Find most important words in given text.
-     * @param string $content Text to find keywords in.
+     * @param array $documentTokens Document tokens to find keywords in
      * @return array Result list of keywords ordered by importance.
      */
-    public function findKeywords($content)  {
-        $this->initDocument($content);
+    public function findKeywords($documentTokens) {
+        $this->initDocument($documentTokens);
         $uniqueTokens = array_unique($this->documentTokens);
 
         $keywords = [];
@@ -113,9 +106,9 @@ class TFIDFDocumentRanker implements DocumentRanker {
         return $result;
     }
 
-    private function initDocument($content) {
-        $this->documentTokens = $this->tokenizer->tokenize($content);
-        $this->documentTokenFrequency = array_count_values($this->documentTokens);
+    private function initDocument($documentTokens) {
+        $this->documentTokens = $documentTokens;
+        $this->tokenFrequency = array_count_values($this->documentTokens);
         $this->documentTokenCount = count($this->documentTokens);
     }
 
@@ -139,8 +132,8 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @return float The TF score
      */
     private function termFrequency($term) {
-        if (isset($this->documentTokenFrequency[$term])) {
-            return $this->documentTokenFrequency[$term] / $this->documentTokenCount;
+        if (isset($this->tokenFrequency[$term])) {
+            return $this->tokenFrequency[$term] / $this->documentTokenCount;
         }
         else {
             return 0.0;
@@ -149,13 +142,11 @@ class TFIDFDocumentRanker implements DocumentRanker {
 
     /**
      * Calculate the IDF (Inverse Document Frequency) of a term in the Document Index
-     * @param string $term Term to calculate the IDF for
+     * @param integer $termCount number of documents containing the term
      * @return float The IDF score
      */
-    private function inverseDocumentFrequency($term) {
-        $termDocumentCount = count($this->index->search($term));
-        $documentCount = $this->index->size();
-        $idf = 1 + log($documentCount / ($termDocumentCount + 1));
+    private function inverseDocumentFrequency($termCount) {
+        $idf = 1 + log($this->indexSize / ($termCount + 1));
         return $idf*$idf;
     }
 
