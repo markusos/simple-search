@@ -53,7 +53,7 @@
                 $.each( data, function( i, result ) {
                     $( "<tr><td><b>" + result.title + "</b></td></tr>" ).appendTo( "#results" );
                     $( "<tr><td>" + result.content + "</td></tr>" ).appendTo( "#results" );
-                    $( "<tr><td>" + result.score + "</td></tr>" ).appendTo( "#results" );
+                    $( "<tr><td><i>" + result.score + "<i></td></tr>" ).appendTo( "#results" );
                     $( "<tr><td>&nbsp</td></tr>" ).appendTo( "#results" );
                 });
             }

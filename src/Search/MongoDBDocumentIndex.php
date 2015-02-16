@@ -48,8 +48,8 @@ class MongoDBDocumentIndex implements DocumentIndex {
             return $results;
         }
 
-        foreach($data['documents'] as $documentID) {
-            $result = $this->documents->findOne(array('_id' => $documentID));
+        $documents = $this->documents->find(['_id' => ['$in' => $data['documents'] ]]);
+        foreach ($documents as $result) {
             $document = new Document($result['title'], $result['content'], $result['location']);
             $document->id = $result['id'];
             $document->tokens = $result['tokens'];
