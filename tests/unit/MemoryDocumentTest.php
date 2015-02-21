@@ -48,9 +48,14 @@ class MemoryDocumentTest extends \PHPUnit_Framework_TestCase {
     {
         $this->index->clear();
         $this->store->clear();
+        $this->assertEquals(0, $this->store->size());
+        $this->assertEquals(0, $this->index->size());
     }
 
     public function testDocumentIndex() {
+
+        $this->assertEquals(9, $this->index->size());
+
         $this->assertContains($this->docA->id, $this->index->search('a'));
         $this->assertContains($this->docB->id, $this->index->search('b'));
         $this->assertContains($this->docC->id, $this->index->search('c'));
@@ -62,6 +67,9 @@ class MemoryDocumentTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testDocumentStore() {
+
+        $this->assertEquals(3, $this->store->size());
+
         $this->assertEquals($this->docA, $this->store->getDocument($this->docA->id));
         $this->assertEquals($this->docB, $this->store->getDocument($this->docB->id));
         $this->assertEquals($this->docC, $this->store->getDocument($this->docC->id));
