@@ -32,6 +32,9 @@ class PersistentEngineTest extends \PHPUnit_Framework_TestCase{
 
         $results = $this->engine->search('a physics theory');
         $this->assertEquals('String theory', $results[0]->title);
+
+        $results = $this->engine->search('漢語水平考試');
+        $this->assertEquals('Hanyu Shuiping Kaoshi', $results[0]->title);
     }
 
     public function testFindKeywords() {

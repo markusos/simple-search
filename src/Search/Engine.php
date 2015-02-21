@@ -12,6 +12,10 @@ class Engine {
      */
     private $index;
     /**
+     * @var DocumentStore
+     */
+    private $store;
+    /**
      * @var Tokenizer
      */
     private $tokenizer;
@@ -33,10 +37,12 @@ class Engine {
         $this->stopWords = Config::getStopWords();
 
         if($persistent) {
-            $this->index = new MongoDBDocumentIndex($this->tokenizer);
+            $this->index = new MongoDBDocumentIndex();
+            $this->store = new MongoDBDocumentStore();
         }
         else {
-            $this->index = new MemoryDocumentIndex($this->tokenizer);
+            $this->index = new MemoryDocumentIndex();
+            $this->store = new MemoryDocumentStore();
         }
 
         $this->ranker = new TFIDFDocumentRanker();
@@ -47,6 +53,10 @@ class Engine {
      * @param Document $document
      */
     public function addDocument(Document $document) {
+        $document->id = $this->store->size();
+        $document->tokens = $this->tokenizer->tokenize($document->content);
+
+        $this->store->addDocument($document);
         $this->index->addDocument($document);
     }
 
@@ -55,13 +65,14 @@ class Engine {
      * @return int
      */
     public function size() {
-        return $this->index->size();
+        return $this->store->size();
     }
 
     /**
      * Clear the search index of all indexed documents
      */
     public function clear() {
+        $this->store->clear();
         $this->index->clear();
     }
 
@@ -83,12 +94,14 @@ class Engine {
         $this->ranker->init($queryTokens, $this->size());
 
         // Find matching documents
-        $documents = [];
+        $documentIds = [];
         foreach ($queryTokens as $token) {
             $result = $this->index->search($token);
             $this->ranker->cacheTokenFrequency($token, count($result));
-            $documents += $result;
+            $documentIds += $result;
         }
+
+        $documents = $this->store->getDocuments($documentIds);
 
         // Rank found documents
         foreach ($documents as $document) {

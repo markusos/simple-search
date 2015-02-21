@@ -8,9 +8,8 @@ interface DocumentIndex {
 
     /**
      * Construct a new DocumentIndex
-     * @param Tokenizer $tokenizer Tokenizer used when indexing documents
      */
-    public function __construct(Tokenizer $tokenizer);
+    public function __construct();
 
     /**
      * Add a new Document to the DocumentIndex
@@ -26,8 +25,8 @@ interface DocumentIndex {
     public function search($query);
 
     /**
-     * Get the number of indexed documents
-     * @return integer Number of indexed documents
+     * Get the number of indexed terms
+     * @return integer Number of indexed terms
      */
     public function size();
 

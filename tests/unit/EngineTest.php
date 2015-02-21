@@ -58,6 +58,9 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $results = $engine->search('computer architecture');
         $this->assertEquals('Computer architecture', $results[0]->title);
 
+        $results = $engine->search('漢語水平考試');
+        $this->assertEquals('Hanyu Shuiping Kaoshi', $results[0]->title);
+
         $results = $engine->search('qwerty');
         $this->assertEquals([], $results);
     }
