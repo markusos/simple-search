@@ -1,4 +1,6 @@
-<?php namespace Search;
+<?php namespace Search\Index;
+
+use Search\Document;
 
 /**
  * Interface DocumentIndex
@@ -20,7 +22,7 @@ interface DocumentIndex {
     /**
      * Search the document index for all documents containing the query token
      * @param $query String token
-     * @return array Array of documents matching the query
+     * @return array Array of document IDs matching the query
      */
     public function search($query);
 

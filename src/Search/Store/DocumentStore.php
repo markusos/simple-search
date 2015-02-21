@@ -1,4 +1,6 @@
-<?php namespace Search;
+<?php namespace Search\Store;
+
+use Search\Document;
 
 /**
  * Interface DocumentStore

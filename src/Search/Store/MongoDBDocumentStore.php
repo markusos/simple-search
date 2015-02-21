@@ -1,5 +1,6 @@
-<?php namespace Search;
+<?php namespace Search\Store;
 
+use Search\Document;
 
 class MongoDBDocumentStore implements DocumentStore {
 

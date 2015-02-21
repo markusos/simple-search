@@ -1,5 +1,9 @@
 <?php namespace Search;
 
+use Search\Index\DocumentIndex;
+use Search\Store\DocumentStore;
+use Search\Ranker\DocumentRanker;
+
 /**
  * Class Engine
  * Main Search Engine class.
@@ -37,15 +41,15 @@ class Engine {
         $this->stopWords = Config::getStopWords();
 
         if($persistent) {
-            $this->index = new MongoDBDocumentIndex();
-            $this->store = new MongoDBDocumentStore();
+            $this->index = new Index\MemcachedDocumentIndex();
+            $this->store = new Store\MongoDBDocumentStore();
         }
         else {
-            $this->index = new MemoryDocumentIndex();
-            $this->store = new MemoryDocumentStore();
+            $this->index = new Index\MemoryDocumentIndex();
+            $this->store = new Store\MemoryDocumentStore();
         }
 
-        $this->ranker = new TFIDFDocumentRanker();
+        $this->ranker = new Ranker\TFIDFDocumentRanker();
     }
 
     /**

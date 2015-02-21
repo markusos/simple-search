@@ -4,11 +4,11 @@
 class MemoryDocumentTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var DocumentIndex
+     * @var Index\DocumentIndex
      */
     private $index;
     /**
-     * @var DocumentStore
+     * @var Store\DocumentStore
      */
     private $store;
 
@@ -20,8 +20,8 @@ class MemoryDocumentTest extends \PHPUnit_Framework_TestCase {
     public function setUp()
     {
         $tokenizer = new SimpleTokenizer();
-        $this->index = new MemoryDocumentIndex();
-        $this->store = new MemoryDocumentStore();
+        $this->index = new Index\MemoryDocumentIndex();
+        $this->store = new Store\MemoryDocumentStore();
 
         $this->docA = new Document('A', 'a s d', '/a/a');
         $this->docB = new Document('B', 'b n m', '/b/b');

@@ -1,15 +1,21 @@
-<?php namespace Search;
+<?php namespace Search\Index;
+
+use Search\Document;
 
 class MongoDBDocumentIndex implements DocumentIndex {
 
     private $connection;
+
+    /**
+     * @var \MongoCollection
+     */
     private $index;
 
     function __construct()
     {
         $this->connection = new \MongoClient();
         $this->index = $this->connection->search->index;
-        $this->index->createIndex(array('token' => 1));
+        $this->index->createIndex(array('token' => 1), array('unique' => true));
     }
 
     public function addDocument(Document $document)

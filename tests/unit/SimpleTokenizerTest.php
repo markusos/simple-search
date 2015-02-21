@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: markus
- * Date: 17/01/15
- * Time: 14:08
- */
-
-namespace Search;
+<?php namespace Search;
 
 
 class SimpleTokenizerTest extends \PHPUnit_Framework_TestCase {

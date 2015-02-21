@@ -1,5 +1,7 @@
 <?php
-namespace Search;
+namespace Search\Ranker;
+
+use Search\Document;
 
 /**
  * Interface DocumentRanker

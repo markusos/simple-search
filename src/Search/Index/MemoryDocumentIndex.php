@@ -1,4 +1,6 @@
-<?php namespace Search;
+<?php namespace Search\Index;
+
+use Search\Document;
 
 class MemoryDocumentIndex implements DocumentIndex {
 
