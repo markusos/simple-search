@@ -79,10 +79,21 @@ class Engine {
 
     /**
      * Clear the search index of all indexed documents
+     * @param string $clear what to clear, default 'all', supports 'store', 'index' and 'all'
      */
-    public function clear() {
-        $this->store->clear();
-        $this->index->clear();
+    public function clear($clear = 'all') {
+        switch($clear) {
+            case 'store':
+                $this->store->clear();
+                break;
+            case 'index':
+                $this->index->clear();
+                break;
+            case 'all':
+                $this->store->clear();
+                $this->index->clear();
+                break;
+        }
     }
 
     /**

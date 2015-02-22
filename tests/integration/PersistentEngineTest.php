@@ -47,5 +47,21 @@ class PersistentEngineTest extends \PHPUnit_Framework_TestCase{
     public function testEngineSize() {
         $this->assertEquals(count($this->data), $this->engine->size());
     }
+
+    public function testEngineIndexAutoRebuild() {
+
+        $results = $this->engine->search('Sweden');
+        $this->assertEquals('Viking Age', $results[0]->title);
+
+        // Drop the index. No results on search
+        $this->engine->clear('index');
+        $results = $this->engine->search('Sweden');
+        $this->assertEquals([], $results);
+
+        // Auto reload index
+        $this->engine = new Engine();
+        $results = $this->engine->search('Sweden');
+        $this->assertEquals('Viking Age', $results[0]->title);
+    }
 }
 

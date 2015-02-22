@@ -79,7 +79,10 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('computer', $results[0]['keyword']);
 
         $this->assertEquals(count($dataset->data), $engine->size());
-        $engine->clear();
+
+        $engine->clear('index');
+        $this->assertNotEquals(0, $engine->size());
+        $engine->clear('store');
         $this->assertEquals(0, $engine->size());
     }
 }
