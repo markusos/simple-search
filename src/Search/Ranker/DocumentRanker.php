@@ -17,7 +17,7 @@ interface DocumentRanker {
     public function init($query, $indexSize);
 
     /**
-     * Init the document ranker with the search query
+     * Cache Token Frequency in the indexed documents
      * @param string $token Token to cache frequency for
      * @param integer $count Number of documents containing $token
      */

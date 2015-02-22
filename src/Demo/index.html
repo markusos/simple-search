@@ -8,6 +8,22 @@
     <meta name="author" content="">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <style>
+        .glyphicon-refresh-animate {
+            -animation: spin .7s infinite linear;
+            -webkit-animation: spin2 .7s infinite linear;
+        }
+
+        @-webkit-keyframes spin2 {
+            from { -webkit-transform: rotate(0deg);}
+            to { -webkit-transform: rotate(360deg);}
+        }
+
+        @keyframes spin {
+            from { transform: scale(1) rotate(0deg);}
+            to { transform: scale(1) rotate(360deg);}
+        }
+    </style>
 </head>
 
 <body>
@@ -35,20 +51,33 @@
 
 <script>
     $( document ).ready(function() {
+        // Setup index if needed!
+        $.getJSON("setup.php").done(function( data ) {
+            if(data) {
+                console.log('Sample data indexed!');
+            }
+            else {
+                console.log('Index already exists');
+            }
+        });
+
+        // Bind search button to click event
         $("#search").click(function(event){
             event.preventDefault();
             search();
         });
     });
 
+    // Handle search button click
     function search() {
-        $("#results").html("");
+        $("#results").html('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true"></span>');
 
-        $.getJSON( "data.php", {
+        $.getJSON( "search.php", {
             query: $("#query").val()
         }).done(function( data ) {
             $("#results").html("");
 
+            // Build result table
             if (data.length > 0) {
                 $.each( data, function( i, result ) {
                     $( "<tr><td><b>" + result.title + "</b></td></tr>" ).appendTo( "#results" );

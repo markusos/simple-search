@@ -1,12 +1,20 @@
 <?php namespace Search\Store;
 
 use Search\Document;
+use Search\Index\DocumentIndex;
 
 /**
  * Interface DocumentStore
  * @package Search
  */
 interface DocumentStore {
+
+    /**
+     * Initialize a DocumentIndex with all documents stored in the DocumentStore
+     * @param DocumentIndex $index Search index to initialize
+     * @return DocumentIndex initialized with documents form the DocumentStore
+     */
+    public function buildIndex(DocumentIndex $index);
 
     /**
      * Add a new Document to the DocumentStore

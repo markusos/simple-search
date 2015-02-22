@@ -1,6 +1,7 @@
 <?php namespace Search\Store;
 
 use Search\Document;
+use Search\Index\DocumentIndex;
 
 class MemoryDocumentStore implements DocumentStore {
 
@@ -11,6 +12,20 @@ class MemoryDocumentStore implements DocumentStore {
     {
         $this->documents = [];
         $this->size = 0;
+    }
+
+    /**
+     * Initialize a DocumentIndex with all documents stored in the DocumentStore
+     * @param DocumentIndex $index Search index to initialize
+     * @return DocumentIndex initialized with documents form the DocumentStore
+     */
+    public function buildIndex(DocumentIndex $index)
+    {
+        foreach ($this->documents as $document) {
+            $index->addDocument($document);
+        }
+
+        return $index;
     }
 
     /**

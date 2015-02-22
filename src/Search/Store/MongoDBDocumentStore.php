@@ -1,11 +1,19 @@
 <?php namespace Search\Store;
 
 use Search\Document;
+use Search\Index\DocumentIndex;
 
 class MongoDBDocumentStore implements DocumentStore {
 
+    /**
+     * @var \MongoClient
+     */
     private $connection;
+    /**
+     * @var \MongoCollection
+     */
     private $documents;
+
     private $size;
 
     function __construct()
@@ -13,6 +21,23 @@ class MongoDBDocumentStore implements DocumentStore {
         $this->connection = new \MongoClient();
         $this->documents = $this->connection->search->documents;
         $this->size = $this->documents->count();
+    }
+
+    /**
+     * Initialize a DocumentIndex with all documents stored in the DocumentStore
+     * @param DocumentIndex $index Search index to initialize
+     * @return DocumentIndex initialized with documents form the DocumentStore
+     */
+    public function buildIndex(DocumentIndex $index)
+    {
+        $cursor = $this->documents->find();
+        foreach ($cursor as $result) {
+            $document = new Document($result['title'], $result['content'], $result['location']);
+            $document->id = $result['id'];
+            $document->tokens = $result['tokens'];
+            $index->addDocument($document);
+        }
+        return $index;
     }
 
     /**

@@ -41,8 +41,13 @@ class Engine {
         $this->stopWords = Config::getStopWords();
 
         if($persistent) {
-            $this->index = new Index\MemcachedDocumentIndex();
             $this->store = new Store\MongoDBDocumentStore();
+            $this->index = new Index\MemcachedDocumentIndex();
+
+            // Init index from store data
+            if ($this->index->size() === 0 && $this->store->size() > 0) {
+                $this->index = $this->store->buildIndex($this->index);
+            }
         }
         else {
             $this->index = new Index\MemoryDocumentIndex();
@@ -66,7 +71,7 @@ class Engine {
 
     /**
      * Get the size of the search index
-     * @return int
+     * @return int number of indexed documents
      */
     public function size() {
         return $this->store->size();
@@ -105,6 +110,7 @@ class Engine {
             $documentIds += $result;
         }
 
+        // Get matching documents from document store
         $documents = $this->store->getDocuments($documentIds);
 
         // Rank found documents
@@ -115,7 +121,7 @@ class Engine {
         // Sort the result according to document rank
         usort($documents, function($a, $b) {
             return $a->score == $b->score ? 0 : ( $a->score > $b->score ) ? -1 : 1;
-        } );
+        });
 
         return $documents;
     }

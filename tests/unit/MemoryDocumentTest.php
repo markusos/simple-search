@@ -20,7 +20,6 @@ class MemoryDocumentTest extends \PHPUnit_Framework_TestCase {
     public function setUp()
     {
         $tokenizer = new SimpleTokenizer();
-        $this->index = new Index\MemoryDocumentIndex();
         $this->store = new Store\MemoryDocumentStore();
 
         $this->docA = new Document('A', 'a s d', '/a/a');
@@ -35,13 +34,11 @@ class MemoryDocumentTest extends \PHPUnit_Framework_TestCase {
         $this->docB->tokens = $tokenizer->tokenize($this->docB->content);
         $this->docC->tokens = $tokenizer->tokenize($this->docC->content);
 
-        $this->index->addDocument($this->docA);
-        $this->index->addDocument($this->docB);
-        $this->index->addDocument($this->docC);
-
         $this->store->addDocument($this->docA);
         $this->store->addDocument($this->docB);
         $this->store->addDocument($this->docC);
+
+        $this->index =  $this->store->buildIndex(new Index\MemoryDocumentIndex());
     }
 
     public function tearDown()

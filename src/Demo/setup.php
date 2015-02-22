@@ -12,11 +12,11 @@ if ($engine->size() === 0) {
     foreach ($data as $article) {
         $engine->addDocument(new Search\Document($article->title, $article->content, ''));
     }
-}
 
-if (isset($_GET["query"])) {
-    $query =  htmlspecialchars($_GET["query"]);
-    echo json_encode($engine->search($query));
+    echo json_encode(true);
+}
+else {
+    echo json_encode(false);
 }
 
 

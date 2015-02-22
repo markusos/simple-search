@@ -4,6 +4,9 @@ use Search\Document;
 
 class MongoDBDocumentIndex implements DocumentIndex {
 
+    /**
+     * @var \MongoClient
+     */
     private $connection;
 
     /**
