@@ -9,6 +9,17 @@ A Simple Search Engine in PHP
 - Query the document index using multi word queries.
 - Search result is ranked with TF-IDF term weighting and cosine similarity.
 - Uses MongoDB to persist the search index and all indexed documents.
+- Uses Snowball stemming of tokens 
+
+### Installation
+
+To use the Search engine you fist need to install the necessary PHP extensions:
+
+```pecl install mongo```
+
+```pecl install stem```
+
+When running the Search Engine make sure that the Mongod and Memcached processes are running on the server
 
 ### License
 

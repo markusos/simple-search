@@ -24,7 +24,7 @@ trait StoreTestTrait {
         $this->assertEquals(0, $this->index->size());
         $this->assertEquals(0, $this->store->size());
 
-        $tokenizer = new SimpleTokenizer();
+        $tokenizer = new Tokenizer\SimpleTokenizer();
 
         $this->documents = [
             new Document('A', 'a s d', '/a/a'),

@@ -1,10 +1,13 @@
-<?php namespace Search;
+<?php namespace Search\Tokenizer;
 
 /**
  * Class SimpleTokenizer
  * @package Search
  */
 class SimpleTokenizer implements Tokenizer {
+
+    use TokenizeTrait;
+
     /**
      * Tokenize the given string
      * Splits the string on space and punctuations
@@ -12,12 +15,7 @@ class SimpleTokenizer implements Tokenizer {
      * @return array string tokens
      */
     public function tokenize($string) {
-        $tokens = array_filter(preg_split("/[\\s\\.,?!;:()\\]\\[\\{\\}\\-\\_]+/", strtolower($string)));
-
-        $tokens = array_map(function($token) {
-            return utf8_encode($token);
-        }, $tokens);
-
-        return $tokens;
+        return $this->encode($this->toTokens($string));
     }
 }
+

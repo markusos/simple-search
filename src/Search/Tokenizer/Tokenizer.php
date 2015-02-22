@@ -1,4 +1,4 @@
-<?php namespace Search;
+<?php namespace Search\Tokenizer;
 
 /**
  * Interface Tokenizer
