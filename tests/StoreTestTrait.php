@@ -37,6 +37,9 @@ trait StoreTestTrait {
             $document->tokens = $tokenizer->tokenize($document->content);
             $this->store->addDocument($document);
         }
+
+        $this->assertEquals(0, $this->index->size());
+        $this->index = $this->store->buildIndex($this->index);
     }
 
     public function tearDown()
@@ -49,10 +52,6 @@ trait StoreTestTrait {
     }
 
     public function testDocumentIndex() {
-
-        $this->assertEquals(0, $this->index->size());
-
-        $this->index = $this->store->buildIndex($this->index);
 
         $this->assertEquals(9, $this->index->size());
 
