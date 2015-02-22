@@ -3,7 +3,6 @@
 use Search\Index\DocumentIndex;
 use Search\Store\DocumentStore;
 use Search\Ranker\DocumentRanker;
-use Search\Tokenizer\SnowballTokenizer;
 use Search\Tokenizer\Tokenizer;
 
 /**
@@ -38,13 +37,9 @@ class Engine {
      */
     public function __construct($persistent = true)
     {
-        $this->tokenizer = new \Search\Tokenizer\SnowballTokenizer();
-
-        $this->stopWords = array_map(function($word) {
-            return $this->tokenizer->tokenize($word)[0];
-        }, Config::getStopWords());
 
         if($persistent) {
+            $this->tokenizer = new \Search\Tokenizer\SnowballTokenizer();
             $this->store = new Store\MongoDBDocumentStore();
             $this->index = new Index\MemcachedDocumentIndex();
 
@@ -54,9 +49,14 @@ class Engine {
             }
         }
         else {
+            $this->tokenizer = new \Search\Tokenizer\SimpleTokenizer();
             $this->index = new Index\MemoryDocumentIndex();
             $this->store = new Store\MemoryDocumentStore();
         }
+
+        $this->stopWords = array_map(function($word) {
+            return $this->tokenizer->tokenize($word)[0];
+        }, Config::getStopWords());
 
         $this->ranker = new Ranker\TFIDFDocumentRanker();
     }
