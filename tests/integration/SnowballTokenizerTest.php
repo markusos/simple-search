@@ -1,6 +1,6 @@
 <?php namespace Search;
 
-class SnowballTokenizerTest {
+class SnowballTokenizerTest extends \PHPUnit_Framework_TestCase {
 
     function testSnowballTokenizer() {
         $tokenizer = new Tokenizer\SnowballTokenizer();
