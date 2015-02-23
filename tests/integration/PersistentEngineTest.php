@@ -1,6 +1,6 @@
 <?php namespace Search;
 
-class PersistentEngineTest extends \PHPUnit_Framework_TestCase{
+class PersistentEngineTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @var Engine
@@ -46,6 +46,10 @@ class PersistentEngineTest extends \PHPUnit_Framework_TestCase{
 
     public function testEngineSize() {
         $this->assertEquals(count($this->data), $this->engine->size());
+    }
+
+    public function testStopWords() {
+        $this->assertEquals([], $this->engine->search("And any are aren't as at be because been before being below between both but by can't"));
     }
 
     public function testEngineIndexAutoRebuild() {

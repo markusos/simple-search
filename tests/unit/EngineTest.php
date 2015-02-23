@@ -63,6 +63,8 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
         $results = $engine->search('qwerty');
         $this->assertEquals([], $results);
+
+        $this->assertEquals([], $engine->search("And any are aren't as at be because been before being below between both but by can't"));
     }
 
     public function testFindKeywords() {
