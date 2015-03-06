@@ -9,11 +9,11 @@ class SnowballTokenizer implements Tokenizer {
 
     private $tokens;
     private $stemms;
-    private $stopwords;
+    private $stopWords;
 
-    function __construct($language = 'english', $stopwords = []) {
+    function __construct($language = 'english', $stopWords = []) {
         $this->language = $language;
-        $this->stopwords = $stopwords;
+        $this->stopWords = $stopWords;
     }
 
     /**
@@ -47,7 +47,7 @@ class SnowballTokenizer implements Tokenizer {
         $stem = 'stem_' . $this->language;
 
         return array_map(function($token) use ($stem) {
-            if (in_array($token, $this->stopwords)) {
+            if (in_array($token, $this->stopWords)) {
                 return $token;
             }
             return $stem($token);

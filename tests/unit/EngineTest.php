@@ -1,26 +1,29 @@
 <?php namespace Search;
 
 
+use Search\Config\Config;
+use Search\Config\DefaultConfig;
+
 class EngineTest extends \PHPUnit_Framework_TestCase {
 
     public function testEngine() {
 
-        $engine = new Engine(false);
+        $engine = new Engine(Config::createBuilder()->testConfig()->stopWords([])->build());
 
         $docs = [
-            new Document('A', 'aa dd ff', ''),
-            new Document('B', 'bb dd dd', ''),
-            new Document('C', 'cc ee ff', ''),
-            new Document('D', 'dd dd dd', ''),
-            new Document('E', 'ee ee ff', ''),
-            new Document('F', 'ff aa bb', ''),
+            new Document('A', 'a d f', ''),
+            new Document('B', 'b d d', ''),
+            new Document('C', 'c e f', ''),
+            new Document('D', 'd d d', ''),
+            new Document('E', 'e e f', ''),
+            new Document('F', 'f a b', ''),
         ];
 
         foreach ($docs as $doc) {
             $engine->addDocument($doc);
         }
 
-        $results = $engine->search('dd');
+        $results = $engine->search('d');
 
         // Validate the result content
         $this->assertEquals(3, count($results));
@@ -29,7 +32,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertNotContains($docs[2], $results);
         $this->assertContains($docs[3], $results);
 
-        $results = $engine->search('dd aa');
+        $results = $engine->search('d a');
 
         // Validate the result content
         $this->assertEquals(4, count($results));
@@ -46,7 +49,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
 
     public function testIndexData() {
 
-        $engine = new Engine(false);
+        $engine = new Engine(Config::createBuilder()->testConfig()->build());
 
         $file = 'tests/Wikipedia_sample_dataset.json';
         $dataset = json_decode(file_get_contents($file));
@@ -68,7 +71,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testFindKeywords() {
-        $engine = new Engine(false);
+        $engine = new Engine(Config::createBuilder()->testConfig()->build());
 
         $file = 'tests/Wikipedia_sample_dataset.json';
         $dataset = json_decode(file_get_contents($file));

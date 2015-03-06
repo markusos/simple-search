@@ -1,9 +1,7 @@
 <?php namespace Search;
 
-use Search\Index\DocumentIndex;
-use Search\Store\DocumentStore;
-use Search\Ranker\DocumentRanker;
-use Search\Tokenizer\Tokenizer;
+use Search\Config\Config;
+use Search\Config\DefaultConfig;
 
 /**
  * Class Engine
@@ -13,49 +11,21 @@ use Search\Tokenizer\Tokenizer;
 class Engine {
 
     /**
-     * @var DocumentIndex
+     * @var Config
      */
-    private $index;
-    /**
-     * @var DocumentStore
-     */
-    private $store;
-    /**
-     * @var Tokenizer
-     */
-    private $tokenizer;
-    /**
-     * @var DocumentRanker
-     */
-    private $ranker;
-
-    private $stopWords;
+    private $config;
 
     /**
      * Construct a new Search Engine instance
-     * @param bool $persistent
+     * @param Config $config  Set the search engine configuration
      */
-    public function __construct($persistent = true)
+    public function __construct(Config $config = null)
     {
-        $this->stopWords = Config::getStopWords();
-
-        if($persistent) {
-            $this->tokenizer = new \Search\Tokenizer\SnowballTokenizer('english', $this->stopWords);
-            $this->store = new Store\MongoDBDocumentStore();
-            $this->index = new Index\MemcachedDocumentIndex();
-
-            // Init index from store data
-            if ($this->index->size() === 0 && $this->store->size() > 0) {
-                $this->index = $this->store->buildIndex($this->index);
-            }
-        }
-        else {
-            $this->tokenizer = new \Search\Tokenizer\SimpleTokenizer();
-            $this->index = new Index\MemoryDocumentIndex();
-            $this->store = new Store\MemoryDocumentStore();
+        if (is_null($config)) {
+            $config = Config::createBuilder()->defaultConfig()->build();
         }
 
-        $this->ranker = new Ranker\TFIDFDocumentRanker();
+        $this->config = $config;
     }
 
     /**
@@ -63,11 +33,11 @@ class Engine {
      * @param Document $document
      */
     public function addDocument(Document $document) {
-        $document->id = $this->store->size();
-        $document->tokens = $this->tokenizer->tokenize($document->content);
+        $document->id = $this->size();
+        $document->tokens = $this->config->getTokenizer()->tokenize($document->content);
 
-        $this->store->addDocument($document);
-        $this->index->addDocument($document);
+        $this->config->getStore()->addDocument($document);
+        $this->config->getIndex()->addDocument($document);
     }
 
     /**
@@ -75,7 +45,7 @@ class Engine {
      * @return int number of indexed documents
      */
     public function size() {
-        return $this->store->size();
+        return $this->config->getStore()->size();
     }
 
     /**
@@ -85,14 +55,14 @@ class Engine {
     public function clear($clear = 'all') {
         switch($clear) {
             case 'store':
-                $this->store->clear();
+                $this->config->getStore()->clear();
                 break;
             case 'index':
-                $this->index->clear();
+                $this->config->getIndex()->clear();
                 break;
             case 'all':
-                $this->store->clear();
-                $this->index->clear();
+                $this->config->getStore()->clear();
+                $this->config->getIndex()->clear();
                 break;
         }
     }
@@ -104,30 +74,31 @@ class Engine {
      * @return array Array of Documents matching the search query, sorted by the ranker class
      */
     public function search($query) {
-        $queryTokens = $this->tokenizer->tokenize($query);
+        $ranker = $this->config->getRanker();
+        $queryTokens = $this->config->getTokenizer()->tokenize($query);
 
         // Filter stop words
         $queryTokens = array_filter($queryTokens, function($token) {
-            return !in_array($token, $this->stopWords);
+            return !in_array($token, $this->config->getStopWords());
         });
 
         // Init the ranker with the query
-        $this->ranker->init($queryTokens, $this->size());
+        $ranker->init($queryTokens, $this->size());
 
         // Find matching documents
         $documentIds = [];
         foreach ($queryTokens as $token) {
-            $result = $this->index->search($token);
-            $this->ranker->cacheTokenFrequency($token, count($result));
+            $result = $this->config->getIndex()->search($token);
+            $ranker->cacheTokenFrequency($token, count($result));
             $documentIds += $result;
         }
 
         // Get matching documents from document store
-        $documents = $this->store->getDocuments($documentIds);
+        $documents = $this->config->getStore()->getDocuments($documentIds);
 
         // Rank found documents
         foreach ($documents as $document) {
-            $document->score = $this->ranker->rank($document);
+            $document->score = $ranker->rank($document);
         }
 
         // Sort the result according to document rank
@@ -144,21 +115,24 @@ class Engine {
      * @return array of keywords, ordered by the ranker class
      */
     public function findKeywords($query) {
-        $tokens = $this->tokenizer->tokenize($query);
-        $this->ranker->init($tokens, $this->size());
+
+        $tokenizer = $this->config->getTokenizer();
+        $ranker = $this->config->getRanker();
+
+        $tokens = $tokenizer->tokenize($query);
+        $ranker->init($tokens, $this->size());
 
         foreach ($tokens as $token) {
-            $result = $this->index->search($token);
-            $this->ranker->cacheTokenFrequency($token, count($result));
+            $result = $this->config->getIndex()->search($token);
+            $ranker->cacheTokenFrequency($token, count($result));
         }
 
-        $keywords = $this->ranker->findKeywords($tokens);
+        $keywords = $ranker->findKeywords($tokens);
 
-        // If tokens are stemmed, look up word for
-        if ($this->tokenizer instanceof \Search\Tokenizer\SnowballTokenizer) {
-
-            $keywords = array_map(function($token) {
-                $token['keyword'] = $this->tokenizer->getWord($token['keyword']);
+        // If tokens are stemmed, look up original word
+        if ($tokenizer instanceof \Search\Tokenizer\SnowballTokenizer) {
+            $keywords = array_map(function($token) use ($tokenizer) {
+                $token['keyword'] = $tokenizer->getWord($token['keyword']);
                 return $token;
             }, $keywords);
         }
