@@ -1,10 +1,20 @@
 {
-  "name": "markusos/simple-search-php",
+  "name": "markusos/simple-search",
   "description": "Simple Search Engine in PHP",
   "version": "0.1",
+  "keywords": ["search","search engine"],
+  "homepage": "https://github.com/markusos/simple-search",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Markus Östberg",
+      "email": "markusos@kth.se",
+      "homepage": "http://markusos.github.io/",
+      "role": "Developer"
+    }
+  ],
   "require": {
-
+    "php": ">=5.4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "4.4.*",
