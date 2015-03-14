@@ -27,9 +27,9 @@ trait StoreTestTrait {
         $tokenizer = new Tokenizer\SimpleTokenizer();
 
         $this->documents = [
-            new Document('A', 'a s d', '/a/a'),
-            new Document('B', 'b n m', '/b/b'),
-            new Document('C', 'c v f', '/c/c')
+            new Document('A', 'a s d'),
+            new Document('B', 'b n m'),
+            new Document('C', 'c v f')
         ];
 
         foreach ($this->documents as $id => $document) {

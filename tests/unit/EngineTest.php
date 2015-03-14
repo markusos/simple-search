@@ -11,12 +11,12 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $engine = new Engine(Config::createBuilder()->testConfig()->stopWords([])->build());
 
         $docs = [
-            new Document('A', 'a d f', ''),
-            new Document('B', 'b d d', ''),
-            new Document('C', 'c e f', ''),
-            new Document('D', 'd d d', ''),
-            new Document('E', 'e e f', ''),
-            new Document('F', 'f a b', ''),
+            new Document('A', 'a d f'),
+            new Document('B', 'b d d'),
+            new Document('C', 'c e f'),
+            new Document('D', 'd d d'),
+            new Document('E', 'e e f'),
+            new Document('F', 'f a b'),
         ];
 
         foreach ($docs as $doc) {
@@ -55,7 +55,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $dataset = json_decode(file_get_contents($file));
 
         foreach ($dataset->data as $article) {
-            $engine->addDocument(new Document($article->title, $article->content, ''));
+            $engine->addDocument(new Document($article->title, $article->content));
         }
 
         $results = $engine->search('computer architecture');
@@ -77,7 +77,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $dataset = json_decode(file_get_contents($file));
 
         foreach ($dataset->data as $article) {
-            $engine->addDocument(new Document($article->title, $article->content, ''));
+            $engine->addDocument(new Document($article->title, $article->content));
         }
 
         $results = $engine->findKeywords('In computer engineering, computer architecture is the conceptual design and fundamental operational structure of a computer system.');

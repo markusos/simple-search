@@ -6,12 +6,10 @@ class Document {
     public $title;
     public $content;
     public $tokens;
-    public $location;
 
-    function __construct($title, $content, $location)
+    function __construct($title, $content)
     {
         $this->title = $title;
         $this->content = $content;
-        $this->location = $location;
     }
 }

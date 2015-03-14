@@ -32,7 +32,7 @@ class MongoDBDocumentStore implements DocumentStore {
     {
         $cursor = $this->documents->find();
         foreach ($cursor as $result) {
-            $document = new Document($result['title'], $result['content'], $result['location']);
+            $document = new Document($result['title'], $result['content']);
             $document->id = $result['id'];
             $document->tokens = $result['tokens'];
             $index->addDocument($document);
@@ -80,7 +80,7 @@ class MongoDBDocumentStore implements DocumentStore {
         $documents = $this->documents->find(['id' => ['$in' => $ids ]]);
 
         foreach ($documents as $result) {
-            $document = new Document($result['title'], $result['content'], $result['location']);
+            $document = new Document($result['title'], $result['content']);
             $document->id = $result['id'];
             $document->tokens = $result['tokens'];
             $results[$document->id] = $document;
