@@ -3,6 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/markusos/simple-search-php/badges/gpa.svg)](https://codeclimate.com/github/markusos/simple-search)
 [![Test Coverage](https://codeclimate.com/github/markusos/simple-search-php/badges/coverage.svg)](https://codeclimate.com/github/markusos/simple-search)
 [![Build Status](https://travis-ci.org/markusos/simple-search.svg?branch=master)](https://travis-ci.org/markusos/simple-search)
+[![License](https://poser.pugx.org/markusos/simple-search/license.svg)](https://packagist.org/packages/markusos/simple-search)
 
 A Simple Search Engine in PHP
 
