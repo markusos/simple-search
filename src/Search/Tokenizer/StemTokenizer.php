@@ -1,20 +1,8 @@
 <?php namespace Search\Tokenizer;
 
-
-class SnowballTokenizer implements Tokenizer {
+abstract class StemTokenizer implements Tokenizer {
 
     use TokenizeTrait;
-
-    private $language;
-
-    private $tokens;
-    private $stemms;
-    private $stopWords;
-
-    function __construct($language = 'english', $stopWords = []) {
-        $this->language = $language;
-        $this->stopWords = $stopWords;
-    }
 
     /**
      * Tokenize the given string
@@ -27,6 +15,18 @@ class SnowballTokenizer implements Tokenizer {
         return $this->encode($this->stemms);
     }
 
+    /**
+     * Stem all tokens in the input array
+     * @param $tokens array of tokens to stem
+     * @return array Array of the stemmed tokens
+     */
+    abstract protected function stem(array $tokens);
+
+    /**
+     * Get the original word from a stem
+     * @param String $stem to find original word for.
+     * @return String the original word
+     */
     public function getWord($stem) {
         $allWords = [];
         foreach ($this->stemms as $key => $token) {
@@ -41,17 +41,5 @@ class SnowballTokenizer implements Tokenizer {
         }
 
         return $stemToWord[$stem];
-    }
-
-    private function stem($tokens) {
-        $stem = 'stem_' . $this->language;
-
-        return array_map(function($token) use ($stem) {
-            if (in_array($token, $this->stopWords)) {
-                return $token;
-            }
-            return $stem($token);
-
-        }, $tokens);
     }
 }

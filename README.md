@@ -51,7 +51,7 @@ Make sure that you install the languages that you need when installing the `stem
 
 $document = new Search\Document(
     'Test Title',
-    'This is a test document with some content to be searchable content'
+    'This is a test document with some content to be searchable.'
     );
 
 $engine = new Search\Engine();

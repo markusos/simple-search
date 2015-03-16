@@ -130,7 +130,7 @@ class Engine {
         $keywords = $ranker->findKeywords($tokens);
 
         // If tokens are stemmed, look up original word
-        if ($tokenizer instanceof \Search\Tokenizer\SnowballTokenizer) {
+        if ($tokenizer instanceof Tokenizer\StemTokenizer) {
             $keywords = array_map(function($token) use ($tokenizer) {
                 $token['keyword'] = $tokenizer->getWord($token['keyword']);
                 return $token;
