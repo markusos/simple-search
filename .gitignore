@@ -9,3 +9,4 @@ composer.lock
 Thumbs.db
 .vagrant*
 db/*.sql
+documents.sqlite3
