@@ -9,8 +9,10 @@ A Simple Search Engine in PHP
 
 - Query the document index using multi word queries.
 - Search result is ranked with TF-IDF term weighting and cosine similarity.
-- Uses MongoDB to persist the search index and all indexed documents.
-- Uses Snowball stemming of tokens.
+- Uses MongoDB, MySQL or SQLite to store the documents.
+- Stores the search index in Memcached or MongoDB. 
+- Easily extensible to support other storage providers.
+- Uses Snowball- or Porter-stemming of tokens.
 
 **NOTE: this project is still in development**
 
