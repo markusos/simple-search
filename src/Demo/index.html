@@ -51,8 +51,8 @@
 
 <script>
     $( document ).ready(function() {
-        // Setup index if needed!
-        $.getJSON("setup.php").done(function( data ) {
+        // Init index if needed!
+        $.getJSON("init.php").done(function( data ) {
             if(data) {
                 console.log('Sample data indexed!');
             }
