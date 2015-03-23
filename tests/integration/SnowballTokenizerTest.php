@@ -15,4 +15,11 @@ class SnowballTokenizerTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals('computer', $tokenizer->getWord('comput'));
     }
+
+    function testSnowballTokenizerStopWords() {
+        $tokenizer = new Tokenizer\SnowballTokenizer();
+        $tokenizer->setStopWords(['computer']);
+        $this->assertContains('computer', $tokenizer->tokenize('In computer engineering'));
+    }
+
 }
