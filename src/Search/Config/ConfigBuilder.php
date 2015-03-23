@@ -67,15 +67,10 @@ class ConfigBuilder {
     }
 
     public function defaultConfig() {
-        $this->tokenizer = new \Search\Tokenizer\SnowballTokenizer('english', $this->stopWords);
+        $this->tokenizer = new \Search\Tokenizer\PorterTokenizer();
         $this->store = new \Search\Store\MongoDBDocumentStore();
         $this->index = new \Search\Index\MemcachedDocumentIndex();
         $this->ranker = new \Search\Ranker\TFIDFDocumentRanker();
-
-        // Init index from store data
-        if ($this->index->size() === 0 && $this->store->size() > 0) {
-            $this->index = $this->store->buildIndex($this->index);
-        }
 
         return $this;
     }
@@ -104,6 +99,13 @@ class ConfigBuilder {
 
         if(is_null($this->ranker)) {
             throw new \Exception("Document Ranker not defined");
+        }
+
+        $this->tokenizer->setStopWords($this->stopWords);
+
+        // Init index from store data
+        if ($this->index->size() === 0 && $this->store->size() > 0) {
+            $this->index = $this->store->buildIndex($this->index);
         }
 
         return new Config($this);

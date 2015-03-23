@@ -2,8 +2,8 @@
 
 class PorterTokenizer extends StemTokenizer {
 
-    function __construct($stopWords = []) {
-        $this->stopWords = $stopWords;
+    function __construct() {
+        $this->stopWords = [];
     }
 
     /**

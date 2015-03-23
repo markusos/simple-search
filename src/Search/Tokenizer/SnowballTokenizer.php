@@ -4,9 +4,9 @@ class SnowballTokenizer extends StemTokenizer {
 
     private $language;
 
-    function __construct($language = 'english', $stopWords = []) {
+    function __construct($language = 'english') {
         $this->language = $language;
-        $this->stopWords = $stopWords;
+        $this->stopWords = [];
     }
 
     /**

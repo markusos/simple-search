@@ -24,7 +24,8 @@ class SQLDocumentStore implements DocumentStore {
      */
     public function buildIndex(DocumentIndex $index)
     {
-        $statement = $this->database->prepare("SELECT id, title, content FROM " . $this->table);
+        $query = "SELECT id, title, content FROM " . $this->table;
+        $statement = $this->database->prepare($query);
         $statement->execute();
         $data = $statement->fetchAll();
 
@@ -41,7 +42,8 @@ class SQLDocumentStore implements DocumentStore {
      */
     public function addDocument(Document $document)
     {
-        $statement = $this->database->prepare("INSERT INTO ". $this->table ." (id, title, content) VALUES (:id, :title, :content);");
+        $query = "INSERT INTO ". $this->table ." (id, title, content) VALUES (:id, :title, :content);";
+        $statement = $this->database->prepare($query);
         $statement->bindParam(':id', $document->id);
         $statement->bindParam(':title', $document->title);
         $statement->bindParam(':content', $document->content);
@@ -56,7 +58,8 @@ class SQLDocumentStore implements DocumentStore {
      */
     public function getDocument($id)
     {
-        $statement = $this->database->prepare("SELECT id, title, content FROM ". $this->table ." WHERE id = :id");
+        $query = "SELECT id, title, content FROM ". $this->table ." WHERE id = :id";
+        $statement = $this->database->prepare($query);
         $statement->bindParam(':id', $id);
         $statement->execute();
         $data = $statement->fetchObject();
@@ -77,9 +80,9 @@ class SQLDocumentStore implements DocumentStore {
     public function getDocuments($ids)
     {
         $documents = [];
-
         $inQuery = implode(',', array_fill(0, count($ids), '?'));
-        $statement = $this->database->prepare("SELECT id, title, content FROM ". $this->table ." WHERE id IN (" . $inQuery . ")");
+        $query = "SELECT id, title, content FROM ". $this->table ." WHERE id IN (" . $inQuery . ")";
+        $statement = $this->database->prepare($query);
         foreach ($ids as $n => $id) {
             $statement->bindValue(($n+1), $id);
         }
@@ -104,9 +107,10 @@ class SQLDocumentStore implements DocumentStore {
      */
     public function size()
     {
-        $statement = $this->database->query("SELECT count(*) FROM " . $this->table);
+        $query = "SELECT count(*) FROM " . $this->table;
+        $statement = $this->database->query($query);
         $statement->bindParam(':tableName', $this->table);
-        return $statement->fetchColumn();
+        return (int) $statement->fetchColumn();
     }
 
     /**

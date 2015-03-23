@@ -1,7 +1,6 @@
 <?php namespace Search;
 
 use Search\Config\Config;
-use Search\Config\DefaultConfig;
 
 /**
  * Class Engine
@@ -15,6 +14,10 @@ class Engine {
      */
     private $config;
 
+    private $store;
+
+    private $index;
+
     /**
      * Construct a new Search Engine instance
      * @param Config $config  Set the search engine configuration
@@ -26,6 +29,8 @@ class Engine {
         }
 
         $this->config = $config;
+        $this->store = $this->config->getStore();
+        $this->index = $this->config->getIndex();
     }
 
     /**
@@ -36,8 +41,8 @@ class Engine {
         $document->id = $this->size();
         $document->tokens = $this->config->getTokenizer()->tokenize($document->content);
 
-        $this->config->getStore()->addDocument($document);
-        $this->config->getIndex()->addDocument($document);
+        $this->store->addDocument($document);
+        $this->index->addDocument($document);
     }
 
     /**
@@ -45,7 +50,7 @@ class Engine {
      * @return int number of indexed documents
      */
     public function size() {
-        return $this->config->getStore()->size();
+        return $this->store->size();
     }
 
     /**
@@ -55,14 +60,14 @@ class Engine {
     public function clear($clear = 'all') {
         switch($clear) {
             case 'store':
-                $this->config->getStore()->clear();
+                $this->store->clear();
                 break;
             case 'index':
-                $this->config->getIndex()->clear();
+                $this->index->clear();
                 break;
             case 'all':
-                $this->config->getStore()->clear();
-                $this->config->getIndex()->clear();
+                $this->store->clear();
+                $this->index->clear();
                 break;
         }
     }
@@ -88,13 +93,13 @@ class Engine {
         // Find matching documents
         $documentIds = [];
         foreach ($queryTokens as $token) {
-            $result = $this->config->getIndex()->search($token);
+            $result = $this->index->search($token);
             $ranker->cacheTokenFrequency($token, count($result));
             $documentIds += $result;
         }
 
         // Get matching documents from document store
-        $documents = $this->config->getStore()->getDocuments($documentIds);
+        $documents = $this->store->getDocuments($documentIds);
 
         // Rank found documents
         foreach ($documents as $document) {
@@ -123,7 +128,7 @@ class Engine {
         $ranker->init($tokens, $this->size());
 
         foreach ($tokens as $token) {
-            $result = $this->config->getIndex()->search($token);
+            $result = $this->index->search($token);
             $ranker->cacheTokenFrequency($token, count($result));
         }
 

@@ -1,8 +1,6 @@
 <?php namespace Search\Config;
 
 
-use Search\Index\DocumentIndex;
-
 class Config {
 
     /**

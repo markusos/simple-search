@@ -15,4 +15,8 @@ trait TokenizeTrait {
             return utf8_encode($token);
         }, $tokens);
     }
+
+    public function setStopWords(array $stopWords) {
+        $this->stopWords = $stopWords;
+    }
 }
