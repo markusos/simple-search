@@ -2,7 +2,7 @@
 
 use Search\Document;
 
-require_once __DIR__ . '/../StoreTestTrait.php';
+require_once __DIR__ . '/../../StoreTestTrait.php';
 
 class SQLDocumentStoreTest extends \PHPUnit_Framework_TestCase {
 

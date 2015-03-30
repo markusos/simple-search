@@ -1,8 +1,8 @@
 <?php namespace Search;
 
-require_once __DIR__ . '/../StoreTestTrait.php';
+require_once __DIR__ . '/../../StoreTestTrait.php';
 
-class MongoDocumentTest extends \PHPUnit_Framework_TestCase {
+class MongoDocumentStoreTest extends \PHPUnit_Framework_TestCase {
 
     use StoreTestTrait;
 

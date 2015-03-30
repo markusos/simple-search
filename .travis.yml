@@ -5,8 +5,17 @@ php:
   - 5.5
   - 5.4
 
+env:
+  - TEST_SUITE=unit
+  - TEST_SUITE=mongo_integration
+  - TEST_SUITE=memcached_integration
+
+services:
+  - mongodb
+  - memcached
+
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: phpunit --coverage-text --testsuite unit
+script: phpunit --coverage-text --testsuite $TEST_SUITE

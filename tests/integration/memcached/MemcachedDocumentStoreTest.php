@@ -1,6 +1,6 @@
 <?php namespace Search;
 
-require_once __DIR__ . '/../StoreTestTrait.php';
+require_once __DIR__ . '/../../StoreTestTrait.php';
 
 class MemcachedDocumentTest extends \PHPUnit_Framework_TestCase {
 
