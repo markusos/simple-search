@@ -17,5 +17,6 @@ services:
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
+  - phpenv config-add travis_config.ini
 
 script: phpunit --coverage-text --testsuite $TEST_SUITE
