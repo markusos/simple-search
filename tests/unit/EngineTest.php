@@ -4,9 +4,11 @@
 use Search\Config\Config;
 use Search\Config\DefaultConfig;
 
-class EngineTest extends \PHPUnit_Framework_TestCase {
+class EngineTest extends \PHPUnit_Framework_TestCase
+{
 
-    public function testEngine() {
+    public function testEngine()
+    {
 
         $engine = new Engine(Config::createBuilder()->testConfig()->stopWords([])->build());
 
@@ -47,7 +49,8 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($docs[3], $results[1]);
     }
 
-    public function testIndexData() {
+    public function testIndexData()
+    {
 
         $engine = new Engine(Config::createBuilder()->testConfig()->build());
 
@@ -70,7 +73,8 @@ class EngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals([], $engine->search("And any are aren't as at be because been before being below between both but by can't"));
     }
 
-    public function testFindKeywords() {
+    public function testFindKeywords()
+    {
         $engine = new Engine(Config::createBuilder()->testConfig()->build());
 
         $file = 'tests/Wikipedia_sample_dataset.json';

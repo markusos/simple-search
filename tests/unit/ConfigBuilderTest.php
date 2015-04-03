@@ -5,7 +5,8 @@ use Search\Ranker\TFIDFDocumentRanker;
 use Search\Store\MemoryDocumentStore;
 use Search\Tokenizer\SimpleTokenizer;
 
-class ConfigBuilderTest extends \PHPUnit_Framework_TestCase {
+class ConfigBuilderTest extends \PHPUnit_Framework_TestCase
+{
 
     private $tokenizer;
     private $index;
@@ -15,7 +16,7 @@ class ConfigBuilderTest extends \PHPUnit_Framework_TestCase {
 
     function __construct()
     {
-        $this->tokenizer  = new SimpleTokenizer();
+        $this->tokenizer = new SimpleTokenizer();
         $this->index = new MemoryDocumentIndex();
         $this->store = new MemoryDocumentStore();
         $this->ranker = new TFIDFDocumentRanker();

@@ -9,7 +9,8 @@ use Search\Document;
  * to rank the Documents
  * @package Search
  */
-class TFIDFDocumentRanker implements DocumentRanker {
+class TFIDFDocumentRanker implements DocumentRanker
+{
 
     /**
      * Query after Tokenization
@@ -51,14 +52,16 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @param array $queryTokens Query tokens
      * @param integer $indexSize Number of documents in index
      */
-    public function init($queryTokens, $indexSize) {
+    public function init($queryTokens, $indexSize)
+    {
         $this->queryTokens = $queryTokens;
         $this->queryTfIdf = [];
 
         $this->indexSize = $indexSize;
     }
 
-    public function cacheTokenFrequency($token, $count) {
+    public function cacheTokenFrequency($token, $count)
+    {
         $this->queryTfIdf[$token] = $this->inverseDocumentFrequency($count);
     }
 
@@ -67,7 +70,8 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @param Document $document Document to rank
      * @return float Document rank
      */
-    public function rank(Document $document) {
+    public function rank(Document $document)
+    {
         $this->initDocument($document->tokens);
 
         $documentTfIdf = [];
@@ -86,12 +90,13 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @param array $documentTokens Document tokens to find keywords in
      * @return array Result list of keywords ordered by importance.
      */
-    public function findKeywords($documentTokens) {
+    public function findKeywords($documentTokens)
+    {
         $this->initDocument($documentTokens);
         $uniqueTokens = array_unique($this->documentTokens);
 
         $keywords = [];
-        foreach($uniqueTokens as $token) {
+        foreach ($uniqueTokens as $token) {
             $documentTf = $this->termFrequency($token);
             $tokenIdf = $this->inverseDocumentFrequency($token);
             $keywords[$token] = $documentTf * $tokenIdf;
@@ -100,14 +105,15 @@ class TFIDFDocumentRanker implements DocumentRanker {
         arsort($keywords);
 
         $result = [];
-        foreach($keywords as $keyword => $score) {
+        foreach ($keywords as $keyword => $score) {
             $result[] = ['keyword' => $keyword, 'score' => $score];
         }
 
         return $result;
     }
 
-    private function initDocument($documentTokens) {
+    private function initDocument($documentTokens)
+    {
         $this->documentTokens = $documentTokens;
         $this->tokenFrequency = array_count_values($this->documentTokens);
         $this->documentTokenCount = count($this->documentTokens);
@@ -119,9 +125,14 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @param array $queryTfIdf Array of TF-IDF scores for the query tokens
      * @return float Cosine Similarity between document and query
      */
-    private function cosineSimilarity($documentTfIdf, $queryTfIdf) {
-        $dot = array_sum(array_map(function($a,$b) { return $a*$b; }, $documentTfIdf, $queryTfIdf));
-        $absQuery = sqrt(array_sum(array_map(function($a) { return $a*$a; }, $queryTfIdf)));
+    private function cosineSimilarity($documentTfIdf, $queryTfIdf)
+    {
+        $dot = array_sum(array_map(function ($a, $b) {
+            return $a * $b;
+        }, $documentTfIdf, $queryTfIdf));
+        $absQuery = sqrt(array_sum(array_map(function ($a) {
+            return $a * $a;
+        }, $queryTfIdf)));
         $score = $dot / $absQuery;
 
         return $score;
@@ -132,11 +143,11 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @param string $term Term to calculate the Term Frequency for
      * @return float The TF score
      */
-    private function termFrequency($term) {
+    private function termFrequency($term)
+    {
         if (isset($this->tokenFrequency[$term])) {
             return $this->tokenFrequency[$term] / $this->documentTokenCount;
-        }
-        else {
+        } else {
             return 0.0;
         }
     }
@@ -146,9 +157,10 @@ class TFIDFDocumentRanker implements DocumentRanker {
      * @param integer $termCount number of documents containing the term
      * @return float The IDF score
      */
-    private function inverseDocumentFrequency($termCount) {
+    private function inverseDocumentFrequency($termCount)
+    {
         $idf = 1 + log($this->indexSize / ($termCount + 1));
-        return $idf*$idf;
+        return $idf * $idf;
     }
 
 }

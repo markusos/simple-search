@@ -1,8 +1,10 @@
 <?php namespace Search\Tokenizer;
 
-class PorterTokenizer extends StemTokenizer {
+class PorterTokenizer extends StemTokenizer
+{
 
-    function __construct() {
+    function __construct()
+    {
         $this->stopWords = [];
     }
 
@@ -11,8 +13,9 @@ class PorterTokenizer extends StemTokenizer {
      * @param $tokens array of tokens to stem
      * @return array Array of the stemmed tokens
      */
-    protected function stem(array $tokens) {
-        return array_map(function($token) {
+    protected function stem(array $tokens)
+    {
+        return array_map(function ($token) {
             if (in_array($token, $this->stopWords)) {
                 return $token;
             }

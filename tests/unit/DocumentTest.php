@@ -1,8 +1,10 @@
 <?php namespace Search;
 
-class DocumentTest extends \PHPUnit_Framework_TestCase {
+class DocumentTest extends \PHPUnit_Framework_TestCase
+{
 
-    function testDocument() {
+    function testDocument()
+    {
 
         $doc = new Document('test', 'test document');
 

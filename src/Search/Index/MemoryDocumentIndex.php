@@ -2,7 +2,8 @@
 
 use Search\Document;
 
-class MemoryDocumentIndex implements DocumentIndex {
+class MemoryDocumentIndex implements DocumentIndex
+{
 
     private $index;
 
@@ -11,32 +12,34 @@ class MemoryDocumentIndex implements DocumentIndex {
         $this->index = [];
     }
 
-    public function addDocument(Document $document) {
+    public function addDocument(Document $document)
+    {
         $uniqueTokens = array_unique($document->tokens);
-        foreach($uniqueTokens as $token) {
+        foreach ($uniqueTokens as $token) {
             $this->addDocumentForToken($token, $document);
         }
     }
 
-    private function addDocumentForToken($token, Document $document) {
+    private function addDocumentForToken($token, Document $document)
+    {
         if (!isset($this->index[$token])) {
             $this->index[$token] = [$document->id => $document->id];
-        }
-        else {
+        } else {
             $this->index[$token][$document->id] = $document->id;
         }
     }
 
-    public function search($query) {
+    public function search($query)
+    {
         if (!isset($this->index[$query])) {
             return [];
-        }
-        else {
+        } else {
             return $this->index[$query];
         }
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->index = [];
     }
 

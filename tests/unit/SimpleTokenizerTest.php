@@ -1,8 +1,10 @@
 <?php namespace Search;
 
 
-class SimpleTokenizerTest extends \PHPUnit_Framework_TestCase {
-    function testSimpleTokenizer() {
+class SimpleTokenizerTest extends \PHPUnit_Framework_TestCase
+{
+    function testSimpleTokenizer()
+    {
         $tokenizer = new Tokenizer\SimpleTokenizer();
         $tokens = $tokenizer->tokenize("Test string to tokenize. Why!?, To make sure it works! ... ");
 

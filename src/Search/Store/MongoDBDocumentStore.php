@@ -3,7 +3,8 @@
 use Search\Document;
 use Search\Index\DocumentIndex;
 
-class MongoDBDocumentStore implements DocumentStore {
+class MongoDBDocumentStore implements DocumentStore
+{
 
     /**
      * @var \MongoClient
@@ -63,8 +64,7 @@ class MongoDBDocumentStore implements DocumentStore {
         $documents = $this->getDocuments([$id]);
         if (isset($documents[$id])) {
             return $documents[$id];
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -77,7 +77,7 @@ class MongoDBDocumentStore implements DocumentStore {
     public function getDocuments($ids)
     {
         $results = [];
-        $documents = $this->documents->find(['id' => ['$in' => $ids ]]);
+        $documents = $this->documents->find(['id' => ['$in' => $ids]]);
 
         foreach ($documents as $result) {
             $document = new Document($result['title'], $result['content']);

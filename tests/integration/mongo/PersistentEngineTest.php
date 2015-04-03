@@ -1,6 +1,7 @@
 <?php namespace Search;
 
-class PersistentEngineTest extends \PHPUnit_Framework_TestCase {
+class PersistentEngineTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var Engine
@@ -28,7 +29,8 @@ class PersistentEngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(0, $this->engine->size());
     }
 
-    public function testSearch() {
+    public function testSearch()
+    {
         $results = $this->engine->search('computer architecture');
         $this->assertEquals('Computer architecture', $results[0]->title);
 
@@ -39,20 +41,24 @@ class PersistentEngineTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('Hanyu Shuiping Kaoshi', $results[0]->title);
     }
 
-    public function testFindKeywords() {
+    public function testFindKeywords()
+    {
         $results = $this->engine->findKeywords('In computer engineering, computer architecture is the conceptual design and fundamental operational structure of a computer system.');
         $this->assertEquals('computer', $results[0]['keyword']);
     }
 
-    public function testEngineSize() {
+    public function testEngineSize()
+    {
         $this->assertEquals(count($this->data), $this->engine->size());
     }
 
-    public function testStopWords() {
+    public function testStopWords()
+    {
         $this->assertEquals([], $this->engine->search("And any are aren't as at be because been before being below between both but by can't"));
     }
 
-    public function testEngineIndexAutoRebuild() {
+    public function testEngineIndexAutoRebuild()
+    {
 
         $results = $this->engine->search('Sweden');
         $this->assertEquals('Viking Age', $results[0]->title);

@@ -1,6 +1,7 @@
 <?php namespace Search;
 
-trait StoreTestTrait {
+trait StoreTestTrait
+{
 
     /**
      * @var Index\DocumentIndex
@@ -51,7 +52,8 @@ trait StoreTestTrait {
         $this->assertEquals(0, $this->store->size());
     }
 
-    public function testDocumentIndex() {
+    public function testDocumentIndex()
+    {
 
         $this->assertEquals(9, $this->index->size());
 
@@ -65,7 +67,8 @@ trait StoreTestTrait {
         $this->assertEquals([], $this->index->search('q'));
     }
 
-    public function testDocumentStore() {
+    public function testDocumentStore()
+    {
 
         $this->assertEquals(3, $this->store->size());
 

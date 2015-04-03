@@ -1,7 +1,8 @@
 <?php namespace Search\Config;
 
 
-class Config {
+class Config
+{
 
     /**
      * @var \Search\Index\DocumentIndex
@@ -22,7 +23,8 @@ class Config {
 
     protected $stopWords;
 
-    public function __construct(ConfigBuilder $builder) {
+    public function __construct(ConfigBuilder $builder)
+    {
         $this->stopWords = $builder->getStopWords();
         $this->index = $builder->getIndex();
         $this->store = $builder->getStore();
@@ -30,27 +32,33 @@ class Config {
         $this->ranker = $builder->getRanker();
     }
 
-    public static function createBuilder() {
+    public static function createBuilder()
+    {
         return new ConfigBuilder();
     }
 
-    public function getStopWords() {
+    public function getStopWords()
+    {
         return $this->stopWords;
     }
 
-    public function getIndex() {
+    public function getIndex()
+    {
         return $this->index;
     }
 
-    public function getStore() {
+    public function getStore()
+    {
         return $this->store;
     }
 
-    public function getTokenizer() {
+    public function getTokenizer()
+    {
         return $this->tokenizer;
     }
 
-    public function getRanker() {
+    public function getRanker()
+    {
         return $this->ranker;
     }
 }

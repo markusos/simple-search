@@ -1,6 +1,7 @@
 <?php namespace Search\Tokenizer;
 
-abstract class StemTokenizer implements Tokenizer {
+abstract class StemTokenizer implements Tokenizer
+{
 
     use TokenizeTrait;
 
@@ -9,7 +10,8 @@ abstract class StemTokenizer implements Tokenizer {
      * @param $string String to tokenize
      * @return array Array of tokens
      */
-    public function tokenize($string) {
+    public function tokenize($string)
+    {
         $this->tokens = $this->toTokens($string);
         $this->stemms = $this->stem($this->tokens);
         return $this->encode($this->stemms);
@@ -27,7 +29,8 @@ abstract class StemTokenizer implements Tokenizer {
      * @param String $stem to find original word for.
      * @return String the original word
      */
-    public function getWord($stem) {
+    public function getWord($stem)
+    {
         $allWords = [];
         foreach ($this->stemms as $key => $token) {
             $allWords[$token][] = $this->tokens[$key];

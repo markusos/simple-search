@@ -7,7 +7,8 @@ use Search\Document;
  * Interface DocumentRanker
  * @package Search
  */
-interface DocumentRanker {
+interface DocumentRanker
+{
 
     /**
      * Init the document ranker with the search query

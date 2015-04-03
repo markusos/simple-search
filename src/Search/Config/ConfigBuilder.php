@@ -5,7 +5,8 @@ use Search\Ranker\DocumentRanker;
 use Search\Store\DocumentStore;
 use Search\Tokenizer\Tokenizer;
 
-class ConfigBuilder {
+class ConfigBuilder
+{
 
     /**
      * @var \Search\Index\DocumentIndex
@@ -41,32 +42,38 @@ class ConfigBuilder {
         "you're", "you've", "your", "yours", "yourself", "yourselves",
     ];
 
-    public function index(DocumentIndex $index) {
+    public function index(DocumentIndex $index)
+    {
         $this->index = $index;
         return $this;
     }
 
-    public function store(DocumentStore $store) {
+    public function store(DocumentStore $store)
+    {
         $this->store = $store;
         return $this;
     }
 
-    public function tokenizer(Tokenizer $tokenizer) {
+    public function tokenizer(Tokenizer $tokenizer)
+    {
         $this->tokenizer = $tokenizer;
         return $this;
     }
 
-    public function ranker(DocumentRanker $ranker) {
+    public function ranker(DocumentRanker $ranker)
+    {
         $this->ranker = $ranker;
         return $this;
     }
 
-    public function stopWords(array $stopWords) {
+    public function stopWords(array $stopWords)
+    {
         $this->stopWords = $stopWords;
         return $this;
     }
 
-    public function defaultConfig() {
+    public function defaultConfig()
+    {
         $this->tokenizer = new \Search\Tokenizer\PorterTokenizer();
         $this->store = new \Search\Store\MongoDBDocumentStore();
         $this->index = new \Search\Index\MemcachedDocumentIndex();
@@ -75,7 +82,8 @@ class ConfigBuilder {
         return $this;
     }
 
-    public function testConfig() {
+    public function testConfig()
+    {
         $this->tokenizer = new \Search\Tokenizer\SimpleTokenizer();
         $this->index = new \Search\Index\MemoryDocumentIndex();
         $this->store = new \Search\Store\MemoryDocumentStore();
@@ -84,20 +92,21 @@ class ConfigBuilder {
         return $this;
     }
 
-    public function build() {
-        if(is_null($this->index)) {
+    public function build()
+    {
+        if (is_null($this->index)) {
             throw new \Exception("Search Index not defined");
         }
 
-        if(is_null($this->store)) {
+        if (is_null($this->store)) {
             throw new \Exception("Document Store not defined");
         }
 
-        if(is_null($this->tokenizer)) {
+        if (is_null($this->tokenizer)) {
             throw new \Exception("Document Tokenizer not defined");
         }
 
-        if(is_null($this->ranker)) {
+        if (is_null($this->ranker)) {
             throw new \Exception("Document Ranker not defined");
         }
 
@@ -111,23 +120,28 @@ class ConfigBuilder {
         return new Config($this);
     }
 
-    public function getStopWords() {
+    public function getStopWords()
+    {
         return $this->stopWords;
     }
 
-    public function getIndex() {
+    public function getIndex()
+    {
         return $this->index;
     }
 
-    public function getStore() {
+    public function getStore()
+    {
         return $this->store;
     }
 
-    public function getTokenizer() {
+    public function getTokenizer()
+    {
         return $this->tokenizer;
     }
 
-    public function getRanker() {
+    public function getRanker()
+    {
         return $this->ranker;
     }
 }

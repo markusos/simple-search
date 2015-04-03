@@ -7,7 +7,8 @@ use Search\Config\Config;
  * Main Search Engine class.
  * @package Search
  */
-class Engine {
+class Engine
+{
 
     /**
      * @var Config
@@ -20,7 +21,7 @@ class Engine {
 
     /**
      * Construct a new Search Engine instance
-     * @param Config $config  Set the search engine configuration
+     * @param Config $config Set the search engine configuration
      */
     public function __construct(Config $config = null)
     {
@@ -37,7 +38,8 @@ class Engine {
      * Add a new Document to the search index
      * @param Document $document
      */
-    public function addDocument(Document $document) {
+    public function addDocument(Document $document)
+    {
         $document->id = $this->size();
         $document->tokens = $this->config->getTokenizer()->tokenize($document->content);
 
@@ -49,7 +51,8 @@ class Engine {
      * Get the size of the search index
      * @return int number of indexed documents
      */
-    public function size() {
+    public function size()
+    {
         return $this->store->size();
     }
 
@@ -57,8 +60,9 @@ class Engine {
      * Clear the search index of all indexed documents
      * @param string $clear what to clear, default 'all', supports 'store', 'index' and 'all'
      */
-    public function clear($clear = 'all') {
-        switch($clear) {
+    public function clear($clear = 'all')
+    {
+        switch ($clear) {
             case 'store':
                 $this->store->clear();
                 break;
@@ -78,12 +82,13 @@ class Engine {
      * @param string $query The search query used to find matching documents
      * @return array Array of Documents matching the search query, sorted by the ranker class
      */
-    public function search($query) {
+    public function search($query)
+    {
         $ranker = $this->config->getRanker();
         $queryTokens = $this->config->getTokenizer()->tokenize($query);
 
         // Filter stop words
-        $queryTokens = array_filter($queryTokens, function($token) {
+        $queryTokens = array_filter($queryTokens, function ($token) {
             return !in_array($token, $this->config->getStopWords());
         });
 
@@ -107,8 +112,8 @@ class Engine {
         }
 
         // Sort the result according to document rank
-        usort($documents, function($a, $b) {
-            return $a->score == $b->score ? 0 : ( $a->score > $b->score ) ? -1 : 1;
+        usort($documents, function ($a, $b) {
+            return $a->score == $b->score ? 0 : ($a->score > $b->score) ? -1 : 1;
         });
 
         return $documents;
@@ -119,7 +124,8 @@ class Engine {
      * @param $query string to identify keywords in
      * @return array of keywords, ordered by the ranker class
      */
-    public function findKeywords($query) {
+    public function findKeywords($query)
+    {
 
         $tokenizer = $this->config->getTokenizer();
         $ranker = $this->config->getRanker();
@@ -136,7 +142,7 @@ class Engine {
 
         // If tokens are stemmed, look up original word
         if ($tokenizer instanceof Tokenizer\StemTokenizer) {
-            $keywords = array_map(function($token) use ($tokenizer) {
+            $keywords = array_map(function ($token) use ($tokenizer) {
                 $token['keyword'] = $tokenizer->getWord($token['keyword']);
                 return $token;
             }, $keywords);

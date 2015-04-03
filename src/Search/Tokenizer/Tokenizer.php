@@ -4,7 +4,8 @@
  * Interface Tokenizer
  * @package Search
  */
-interface Tokenizer {
+interface Tokenizer
+{
     /**
      * Tokenize the given string
      * @param $string String to tokenize

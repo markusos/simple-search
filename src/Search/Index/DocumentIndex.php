@@ -6,7 +6,8 @@ use Search\Document;
  * Interface DocumentIndex
  * @package Search
  */
-interface DocumentIndex {
+interface DocumentIndex
+{
 
     /**
      * Construct a new DocumentIndex

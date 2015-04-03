@@ -1,8 +1,10 @@
 <?php namespace Search;
 
-class SnowballTokenizerTest extends \PHPUnit_Framework_TestCase {
+class SnowballTokenizerTest extends \PHPUnit_Framework_TestCase
+{
 
-    function testSnowballTokenizer() {
+    function testSnowballTokenizer()
+    {
         $tokenizer = new Tokenizer\SnowballTokenizer();
         $tokens = $tokenizer->tokenize('In computer engineering, computer architecture is the conceptual design and fundamental operational structure of a computing system.');
 
@@ -16,7 +18,8 @@ class SnowballTokenizerTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('computer', $tokenizer->getWord('comput'));
     }
 
-    function testSnowballTokenizerStopWords() {
+    function testSnowballTokenizerStopWords()
+    {
         $tokenizer = new Tokenizer\SnowballTokenizer();
         $tokenizer->setStopWords(['computer']);
         $this->assertContains('computer', $tokenizer->tokenize('In computer engineering'));

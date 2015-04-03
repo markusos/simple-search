@@ -4,7 +4,8 @@
  * Class SimpleTokenizer
  * @package Search
  */
-class SimpleTokenizer implements Tokenizer {
+class SimpleTokenizer implements Tokenizer
+{
 
     use TokenizeTrait;
 
@@ -14,7 +15,8 @@ class SimpleTokenizer implements Tokenizer {
      * @param String $string String to tokenize
      * @return array string tokens
      */
-    public function tokenize($string) {
+    public function tokenize($string)
+    {
         return $this->encode($this->toTokens($string));
     }
 }

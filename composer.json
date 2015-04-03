@@ -2,7 +2,10 @@
   "name": "markusos/simple-search",
   "description": "Simple Search Engine in PHP",
   "version": "0.1",
-  "keywords": ["search","search engine"],
+  "keywords": [
+    "search",
+    "search engine"
+  ],
   "homepage": "https://github.com/markusos/simple-search",
   "license": "MIT",
   "authors": [

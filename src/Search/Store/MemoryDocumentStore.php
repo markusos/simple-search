@@ -3,7 +3,8 @@
 use Search\Document;
 use Search\Index\DocumentIndex;
 
-class MemoryDocumentStore implements DocumentStore {
+class MemoryDocumentStore implements DocumentStore
+{
 
     private $documents;
     private $size;
@@ -47,8 +48,7 @@ class MemoryDocumentStore implements DocumentStore {
     {
         if (isset($this->documents[$id])) {
             return $this->documents[$id];
-        }
-        else {
+        } else {
             return null;
         }
     }
