@@ -15,11 +15,13 @@ class MemcachedDocumentIndex implements DocumentIndex {
 
     /**
      * Construct a new DocumentIndex
+     * @param String $host Host setting for Memcached service
+     * @param Integer $port Port setting for Memcached service
      */
-    public function __construct()
+    public function __construct($host = 'localhost', $port = 11211)
     {
         $this->index = new \Memcached();
-        $this->index->addServer('localhost', 11211);
+        $this->index->addServer($host, $port);
         $this->size = $this->index->get('index_size');
         if ($this->size === false) {
             $this->size = 0;
