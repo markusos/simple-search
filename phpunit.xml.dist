@@ -24,7 +24,7 @@
             <directory>./tests/integration/memcached</directory>
         </testsuite>
         <testsuite name="sql_integration">
-            <directory>./tests/integration/memcached</directory>
+            <directory>./tests/integration/sql</directory>
         </testsuite>
     </testsuites>
     <logging>

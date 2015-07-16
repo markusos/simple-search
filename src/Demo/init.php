@@ -4,12 +4,21 @@ require "setup.php";
 
 // Create the table if it does not exist
 try {
-    $query = "CREATE TABLE documents (id int NOT NULL UNIQUE, title VARCHAR (255) NOT NULL, content VARCHAR (2048) NOT NULL);";
+    global $pdo;
+    initPDO();
+
+    $query = "CREATE TABLE documents (id int NOT NULL UNIQUE, title VARBINARY (255) NOT NULL, content VARBINARY (2048) NOT NULL);";
     $statement = $pdo->prepare($query);
     $statement->execute();
 } catch (\Exception $e) {
     // Do nothing!
 }
+
+global $index;
+global $engine;
+global $store;
+
+setup();
 
 // If index is empty, add test data set.
 if ($index->size() === 0) {

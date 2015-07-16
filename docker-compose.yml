@@ -1,0 +1,28 @@
+web:
+  build: .
+  command: php -S 0.0.0.0:8000 -t /code/src/Demo
+  ports:
+    - "8000:8000"
+  links:
+    - db
+    - memcached
+  volumes:
+    - .:/code
+  environment:
+    DB_HOST: db_1
+    DB_NAME: test
+    DB_USER: root
+    DB_PASSWORD: password
+    MEMCACHED_HOST: memcached_1
+    MEMCACHED_PORT: 11211
+db:
+  image: mysql
+  environment:
+    MYSQL_DATABASE: test
+    MYSQL_ROOT_PASSWORD: password
+
+memcached:
+   hostname: memcached
+   image: memcached
+   environment:
+     MEMCACHED_MEMORY_LIMIT: 128
