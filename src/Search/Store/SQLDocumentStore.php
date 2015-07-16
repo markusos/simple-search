@@ -33,6 +33,9 @@ class SQLDocumentStore implements DocumentStore {
             $document = $this->buildDocument($result['id'], $result['title'], $result['content']);
             $index->addDocument($document);
         }
+
+        $statement->closeCursor();
+
         return $index;
     }
 
@@ -49,6 +52,7 @@ class SQLDocumentStore implements DocumentStore {
         $statement->bindParam(':content', $document->content);
 
         $statement->execute();
+        $statement->closeCursor();
     }
 
     /**
@@ -65,11 +69,14 @@ class SQLDocumentStore implements DocumentStore {
         $data = $statement->fetchObject();
 
         if ($data) {
-            return $this->buildDocument($data->id, $data->title, $data->content);
+            $document = $this->buildDocument($data->id, $data->title, $data->content);
         }
         else {
-            return null;
+            $document = null;
         }
+
+        $statement->closeCursor();
+        return $document;
     }
 
     /**
@@ -80,25 +87,27 @@ class SQLDocumentStore implements DocumentStore {
     public function getDocuments($ids)
     {
         $documents = [];
-        $inQuery = implode(',', array_fill(0, count($ids), '?'));
-        $query = "SELECT id, title, content FROM ". $this->table ." WHERE id IN (" . $inQuery . ")";
-        $statement = $this->database->prepare($query);
-        foreach ($ids as $n => $id) {
-            $statement->bindValue(($n+1), $id);
-        }
 
-        $statement->execute();
-        $data = $statement->fetchAll();
-
-        if ($data) {
-            foreach ($data as $result) {
-                $documents[] = $this->buildDocument($result['id'], $result['title'], $result['content']);
+        if ($ids != []) {
+            $inQuery = implode(',', array_fill(0, count($ids), '?'));
+            $query = "SELECT id, title, content FROM ". $this->table ." WHERE id IN (" . $inQuery . ")";
+            $statement = $this->database->prepare($query);
+            foreach ($ids as $n => $id) {
+                $statement->bindValue(($n+1), $id);
             }
-            return $documents;
+            $statement->execute();
+            $data = $statement->fetchAll();
+
+            if ($data) {
+                foreach ($data as $result) {
+                    $documents[] = $this->buildDocument($result['id'], $result['title'], $result['content']);
+                }
+            }
+
+            $statement->closeCursor();
         }
-        else {
-            return [];
-        }
+
+        return $documents;
     }
 
     /**
@@ -110,7 +119,10 @@ class SQLDocumentStore implements DocumentStore {
         $query = "SELECT count(*) FROM " . $this->table;
         $statement = $this->database->query($query);
         $statement->bindParam(':tableName', $this->table);
-        return (int) $statement->fetchColumn();
+        $size = (int) $statement->fetchColumn();
+        $statement->closeCursor();
+
+        return $size;
     }
 
     /**
