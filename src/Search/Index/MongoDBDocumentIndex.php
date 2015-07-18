@@ -14,9 +14,9 @@ class MongoDBDocumentIndex implements DocumentIndex {
      */
     private $index;
 
-    function __construct()
+    function __construct($host='localhost', $port=27017)
     {
-        $this->connection = new \MongoClient();
+        $this->connection = new \MongoClient('mongodb://'. $host .':'. $port);
         $this->index = $this->connection->search->index;
         $this->index->createIndex(array('token' => 1), array('unique' => true));
     }

@@ -1,5 +1,7 @@
 <?php namespace Search;
 
+use Search\Config\Env;
+
 class PersistentEngineTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -15,8 +17,7 @@ class PersistentEngineTest extends \PHPUnit_Framework_TestCase
         $this->engine = new Engine();
         $this->engine->clear();
 
-        $file = 'tests/Wikipedia_sample_dataset.json';
-        $this->data = json_decode(file_get_contents($file))->data;
+        $this->data = json_decode(file_get_contents(Env::get('TEST_DATASET_PATH')))->data;
 
         foreach ($this->data as $article) {
             $this->engine->addDocument(new Document($article->title, $article->content, ''));

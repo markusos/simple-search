@@ -1,5 +1,6 @@
 <?php namespace Search;
 
+use Search\Config\Env;
 use Search\Document;
 
 require_once __DIR__ . '/../../StoreTestTrait.php';
@@ -13,19 +14,18 @@ class SQLDocumentStoreTest extends \PHPUnit_Framework_TestCase
 
     function __construct()
     {
-        $this->pdo = new \PDO('sqlite:documents.sqlite3');
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = Env::getPDO();
 
         // Create the table if it does not exist
         try {
-            $statement = $this->pdo->prepare("CREATE TABLE documents (id INT NOT NULL UNIQUE, title VARCHAR (255) NOT NULL, content VARCHAR (2048) NOT NULL);");
+            $statement = $this->pdo->prepare("CREATE TABLE documents (id INT NOT NULL UNIQUE, title VARBINARY (255) NOT NULL, content VARBINARY (2048) NOT NULL);");
             $statement->execute();
         } catch (\Exception $e) {
             // Do nothing!
         }
 
         $tokenizer = new Tokenizer\PorterTokenizer();
-        $this->index = new Index\MemcachedDocumentIndex();
+        $this->index = new Index\MemcachedDocumentIndex(Env::get('MEMCACHED_HOST'), Env::get('MEMCACHED_PORT'));
         $this->store = new Store\SQLDocumentStore($this->pdo, $tokenizer);
     }
 
@@ -53,7 +53,12 @@ class SQLDocumentStoreTest extends \PHPUnit_Framework_TestCase
         $d = $this->store->getDocument(1);
         $this->assertEquals($document, $d);
 
-        $this->setExpectedException('Exception', "UNIQUE constraint failed");
+        if (Env::isSQLite()) {
+            $this->setExpectedException('Exception', "UNIQUE constraint failed");
+        }
+        else {
+            $this->setExpectedException('Exception', "Duplicate entry '1' for key 'id'");
+        }
         $this->store->addDocument($document);
 
         $this->store->clear();

@@ -17,9 +17,9 @@ class MongoDBDocumentStore implements DocumentStore
 
     private $size;
 
-    function __construct()
+    function __construct($host='localhost', $port=27017)
     {
-        $this->connection = new \MongoClient();
+        $this->connection = new \MongoClient('mongodb://'. $host .':'. $port);
         $this->documents = $this->connection->search->documents;
         $this->size = $this->documents->count();
     }

@@ -54,7 +54,6 @@ trait StoreTestTrait
 
     public function testDocumentIndex()
     {
-
         $this->assertEquals(9, $this->index->size());
 
         $this->assertContains($this->documents[0]->id, $this->index->search('a'));

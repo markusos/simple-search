@@ -1,8 +1,15 @@
 <?php namespace Search\Config;
 
 use Search\Index\DocumentIndex;
+use Search\Index\MemcachedDocumentIndex;
+use Search\Index\MemoryDocumentIndex;
 use Search\Ranker\DocumentRanker;
+use Search\Ranker\TFIDFDocumentRanker;
 use Search\Store\DocumentStore;
+use Search\Store\MemoryDocumentStore;
+use Search\Store\MongoDBDocumentStore;
+use Search\Tokenizer\PorterTokenizer;
+use Search\Tokenizer\SimpleTokenizer;
 use Search\Tokenizer\Tokenizer;
 
 class ConfigBuilder
@@ -74,20 +81,20 @@ class ConfigBuilder
 
     public function defaultConfig()
     {
-        $this->tokenizer = new \Search\Tokenizer\PorterTokenizer();
-        $this->store = new \Search\Store\MongoDBDocumentStore();
-        $this->index = new \Search\Index\MemcachedDocumentIndex();
-        $this->ranker = new \Search\Ranker\TFIDFDocumentRanker();
+        $this->tokenizer = new PorterTokenizer();
+        $this->store = new MongoDBDocumentStore(ENV::get('MONGO_HOST'), ENV::get('MONGO_PORT'));
+        $this->index = new MemcachedDocumentIndex(ENV::get('MEMCACHED_HOST'), ENV::get('MEMCACHED_PORT'));
+        $this->ranker = new TFIDFDocumentRanker();
 
         return $this;
     }
 
     public function testConfig()
     {
-        $this->tokenizer = new \Search\Tokenizer\SimpleTokenizer();
-        $this->index = new \Search\Index\MemoryDocumentIndex();
-        $this->store = new \Search\Store\MemoryDocumentStore();
-        $this->ranker = new \Search\Ranker\TFIDFDocumentRanker();
+        $this->tokenizer = new SimpleTokenizer();
+        $this->index = new MemoryDocumentIndex();
+        $this->store = new MemoryDocumentStore();
+        $this->ranker = new TFIDFDocumentRanker();
 
         return $this;
     }

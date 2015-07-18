@@ -1,12 +1,12 @@
 <?php
 
+use Search\Config\Env;
+
 require "setup.php";
 
 // Create the table if it does not exist
 try {
-    global $pdo;
-    initPDO();
-
+    $pdo = Env::getPDO();
     $query = "CREATE TABLE documents (id int NOT NULL UNIQUE, title VARBINARY (255) NOT NULL, content VARBINARY (2048) NOT NULL);";
     $statement = $pdo->prepare($query);
     $statement->execute();

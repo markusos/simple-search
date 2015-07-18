@@ -2,7 +2,7 @@
 
 
 use Search\Config\Config;
-use Search\Config\DefaultConfig;
+use Search\Config\Env;
 
 class EngineTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,9 +53,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase
     {
 
         $engine = new Engine(Config::createBuilder()->testConfig()->build());
-
-        $file = 'tests/Wikipedia_sample_dataset.json';
-        $dataset = json_decode(file_get_contents($file));
+        $dataset = json_decode(file_get_contents(Env::get('TEST_DATASET_PATH')));
 
         foreach ($dataset->data as $article) {
             $engine->addDocument(new Document($article->title, $article->content));
@@ -76,9 +74,7 @@ class EngineTest extends \PHPUnit_Framework_TestCase
     public function testFindKeywords()
     {
         $engine = new Engine(Config::createBuilder()->testConfig()->build());
-
-        $file = 'tests/Wikipedia_sample_dataset.json';
-        $dataset = json_decode(file_get_contents($file));
+        $dataset = json_decode(file_get_contents(Env::get('TEST_DATASET_PATH')));
 
         foreach ($dataset->data as $article) {
             $engine->addDocument(new Document($article->title, $article->content));

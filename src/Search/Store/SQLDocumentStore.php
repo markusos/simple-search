@@ -50,7 +50,6 @@ class SQLDocumentStore implements DocumentStore {
         $statement->bindParam(':id', $document->id);
         $statement->bindParam(':title', $document->title);
         $statement->bindParam(':content', $document->content);
-
         $statement->execute();
         $statement->closeCursor();
     }

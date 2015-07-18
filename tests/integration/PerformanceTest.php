@@ -1,5 +1,6 @@
 <?php namespace Search;
 
+use Search\Config\Env;
 
 class PerformanceTest extends \PHPUnit_Framework_TestCase {
 
@@ -10,8 +11,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase {
         $engine = new Engine();
         $engine->clear();
 
-        $file = 'tests/Wikipedia_sample_dataset.json';
-        $data = json_decode(file_get_contents($file))->data;
+        $data = json_decode(file_get_contents(Env::get('TEST_DATASET_PATH')))->data;
 
         foreach ($data as $article) {
             $engine->addDocument(new Document($article->title, $article->content, ''));
