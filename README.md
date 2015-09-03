@@ -78,7 +78,7 @@ The search engine supports customization by exchangeable service providers. When
 ```php
 <?php 
 
-$config = new Config::createBuilder()
+$config = Search\Config\Config::createBuilder()
                 ->tokenizer($tokenizer)
                 ->store($store)
                 ->index($index)
@@ -95,7 +95,7 @@ Or you can use the default and override the settings you need:
 ```php
 <?php 
 
-$config = new Config::createBuilder()
+$config = Search\Config\Config::createBuilder()
                 ->defaultConfig()
                 ->stopWords(['new', 'list', 'of', 'stop', 'words'])
                 ->build();
