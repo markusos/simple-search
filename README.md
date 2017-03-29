@@ -1,4 +1,4 @@
-#Simple Search
+# Simple Search
 
 [![Code Climate](https://codeclimate.com/github/markusos/simple-search-php/badges/gpa.svg)](https://codeclimate.com/github/markusos/simple-search)
 [![Test Coverage](https://codeclimate.com/github/markusos/simple-search-php/badges/coverage.svg)](https://codeclimate.com/github/markusos/simple-search)
@@ -16,7 +16,7 @@ A Simple Search Engine in PHP
 
 **NOTE: this project is still in development**
 
-###Install
+### Install
 
 ``` bash
 $ composer require markusos/simple-search dev-master
@@ -24,7 +24,7 @@ $ composer require markusos/simple-search dev-master
 
 When running the Search Engine make sure that the MongoDB and Memcached processes are running on the server.
 
-###System Requirements
+### System Requirements
 
 You need **PHP >= 5.4.0** to use `markusos\simple-search` but the latest stable version of PHP is recommended.
 
@@ -42,9 +42,9 @@ $ pecl install stem
 
 Make sure that you install the languages that you need when installing the `stem` extension.
 
-###Usage
+### Usage
 
-####Basic usage
+#### Basic usage
 
 **Index document:**
 
@@ -71,7 +71,7 @@ $result = $engine->search('test document');
 
 ```
 
-####Custom setup
+#### Custom setup
 
 The search engine supports customization by exchangeable service providers. When initializing the search engine it is possible to switch out the default implementations and provide your own.
 
@@ -104,7 +104,7 @@ $engine = new Search\Engine($config);
 
 ```
 
-###Testing
+### Testing
 
 Simple Search has a [PHPUnit](https://phpunit.de/) test suite. To run the tests, run the following command from the project folder:
 
@@ -118,7 +118,7 @@ If you don't want to run the integration tests that require Memcached and MongoD
 $ phpunit --testsuite unit
 ```
 
-###License
+### License
 
 The MIT License (MIT)
 
